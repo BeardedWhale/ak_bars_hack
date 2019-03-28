@@ -1,0 +1,467 @@
+<html lang = "ru">
+
+<head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function (){
+            $("#categorySelect").change(function() {
+                // foo is the id of the other select box 
+                if ($(this).val() == "cars") {
+                    $("#carInfo").show();
+                    $("#apart").hide();
+                }else{
+
+                	if ($(this).val() == "house"){
+                		$("#carInfo").hide();
+                		$("#apart").show();
+                	}
+                    
+                } 
+            });
+        });
+    </script>
+
+
+</head>
+
+<style type="text/css">
+	select.form-control{
+  background-color: white;
+  -webkit-appearance:none;
+   background-image:
+    linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%),
+    linear-gradient(to right, #ccc, #ccc);
+  background-position:
+    calc(100% - 20px) calc(1em + 2px),
+    calc(100% - 15px) calc(1em + 2px),
+    calc(100% - 2.5em) 0.5em;
+  background-size:
+    5px 5px,
+    5px 5px,
+    1px 1.5em;
+  background-repeat: no-repeat;  /*Adds background-image*/
+      /*background-position: 190px 10px!important; */ /*Position of the background-image*/
+ }
+
+ #carInfo, #apart{
+ 	display: none;
+ }
+
+
+</style>
+
+<body>
+	
+<div class="container">    
+            
+    <div id="signupbox" style=" margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+        <div class="panel panel-info">
+            <div class="panel-heading ">
+                <div class="panel-title text-center">Automatic price calculator</div>
+            </div>  
+            <div class="panel-body" >
+                <form method="post" action=".">
+                    <input type='hidden' name='csrfmiddlewaretoken' value='XFe2rTYl9WOpV8U6X5CfbIuOZOELJ97S' />
+                            
+
+                    <form  class="form-horizontal" method="post" >
+                        <input type='hidden' name='csrfmiddlewaretoken' value='XFe2rTYl9WOpV8U6X5CfbIuOZOELJ97S' />
+
+                        <div id="div_id_region" class="form-group required">
+                            <label for="regionSelect"  class="control-label col-md-4  requiredField">Choose your region</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                            	<select class="form-control" id="regionSelect">
+<!-- 							      <option>Cars</option>
+							      <option>Real Estate</option> -->
+<!-- 							      <option>3</option>
+							      <option>4</option>
+							      <option>5</option> -->
+							    </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+
+                        <div id="div_id_citu" class="form-group required">
+                            <label for="citySelect"  class="control-label col-md-4  requiredField">Choose your city</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                            	<select class="form-control" id="citySelect">
+<!-- 							      <option>Cars</option>
+							      <option>Real Estate</option> -->
+<!-- 							      <option>3</option>
+							      <option>4</option>
+							      <option>5</option> -->
+							    </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+
+
+                     <!--    <div id="div_id_subway" class="form-group required">
+                            <label for="cubwaySelect"  class="control-label col-md-4  requiredField">Choose your nearest subway</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                            	<select class="form-control" id="subwaySelect">
+ 							      <option>Cars</option>
+							      <option>Real Estate</option> -->
+		<!-- 					      <option>3</option>
+							      <option>4</option>
+							      <option>5</option>
+							    </select>
+                                <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label>
+                            </div>
+                        </div>  --> 
+
+                        <div id="div_id_category" class="form-group required">
+                            <label for="categorySelect"  class="control-label col-md-4  requiredField">Category</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                            	<select class="form-control" id="categorySelect">
+                            	<option disabled selected value> -- select an option -- </option>
+							      <option value="cars">Cars</option>
+							      <option value="house">Real Estate</option>
+<!-- 							      <option>3</option>
+							      <option>4</option>
+							      <option>5</option> -->
+							    </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+
+
+
+
+
+                        <div id = "carInfo">
+
+						<div id="div_id_car_brand" class="form-group required">
+                            <label for="carBrandSelect"  class="control-label col-md-4  requiredField">Brand</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                            	<select class="form-control" id="carBrandSelect">
+							      <option>Audi</option>
+							      <option>BMW</option>
+<!-- 							      <option>3</option>
+							      <option>4</option>
+							      <option>5</option> -->
+							    </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+						<div id="div_id_car_type" class="form-group required">
+                            <label for="carTypeSelect"  class="control-label col-md-4  requiredField">Model</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                            	<select class="form-control" id="carTypeSelect">
+							      <option>Audi</option>
+							      <option>BMW</option>
+<!-- 							      <option>3</option>
+							      <option>4</option>
+							      <option>5</option> -->
+							    </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+
+<!--                         <div id="div_id_price" class="form-group required"> 
+                            <label for="id_price" class="control-label col-md-4  requiredField"> Price</label> 
+                            <div class="controls col-md-4 "> 
+                                <input class="input-md textinput textInput form-control" id="id_price_1" name="from_p" placeholder="From" style="margin-bottom: 10px" type="text" />
+                            </div>
+
+                            <div class="controls col-md-4 "> 
+                                <input class="input-md textinput textInput form-control" id="id_price_2" name="until_p" placeholder="Until" style="margin-bottom: 10px" type="text" />
+                            </div>
+                        </div> -->
+
+
+                       <div class="form-group">
+                            <div class="controls col-md-offset-4 col-md-8 ">
+                                <div id="div_id_terms" class="checkbox required">
+                                    <label for="id_terms" class=" requiredField">
+                                         <input class="input-ms checkboxinput" id="id_terms" name="terms" style="margin-bottom: 10px margin-right: 5%" type="checkbox" />
+                                         New
+                                    </label>
+
+                                    <label for="id_terms" class=" requiredField">
+                                         <input class="input-ms checkboxinput" id="id_terms" name="terms" style="margin-bottom: 10px" type="checkbox" />
+                                         Used
+                                    </label>
+                                </div> 
+                                    
+                            </div>
+                        </div> 
+
+                        <div id="div_id_year" class="form-group required"> 
+                            <label for="id_year" class="control-label col-md-4  requiredField"> Year</label> 
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_year" name="year" placeholder="How old is your car" style="margin-bottom: 10px" type="text" />
+                            </div>
+                        </div>
+
+                        <div id="div_id_mileage" class="form-group required"> 
+                            <label for="id_mileage" class="control-label col-md-4  requiredField"> Car mileage</label> 
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_mileage" name="mileage" placeholder="Car mileage" style="margin-bottom: 10px" type="text" />
+                            </div>
+                        </div>
+
+
+                        <div id="div_id_power" class="form-group required"> 
+                            <label for="id_power" class="control-label col-md-4  requiredField"> Power</label> 
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_power" name="power" placeholder="Horse power" style="margin-bottom: 10px" type="text" />
+                            </div>
+                        </div>
+
+
+                        <div id="div_id_evolume" class="form-group required"> 
+                            <label for="id_evolume" class="control-label col-md-4  requiredField"> Engine volume</label> 
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_evolume" name="evolume" placeholder="Engine volume (liters)" style="margin-bottom: 10px" type="text" />
+                            </div>
+                        </div>
+
+
+                        <div id="div_id_korobka" class="form-group required">
+                            <label for="carKorobkaSelect"  class="control-label col-md-4  requiredField">Korobka</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                            	<select class="form-control" id="carKorobkaSelect">
+							      <option>Mechanic</option>
+							      <option>Automat</option>
+							      <option>Robot</option>
+
+<!-- 							      <option>3</option>
+							      <option>4</option>
+							      <option>5</option> -->
+							    </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+
+                         <div id="div_id_kuzov" class="form-group required">
+                            <label for="carkuzovSelect"  class="control-label col-md-4  requiredField">Kuzov</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                            	<select class="form-control" id="carkuzovSelect">
+							      <option>Sedan</option>
+							      <option>Hatchback</option>
+
+<!-- 							      <option>3</option>
+							      <option>4</option>
+							      <option>5</option> -->
+							    </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+
+                        <div id="div_id_color" class="form-group required">
+                            <label for="carcolorSelect"  class="control-label col-md-4  requiredField">Color</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                            	<select class="form-control" id="carcolorSelect">
+							      <option>White</option>
+							      <option>Black</option>
+
+<!-- 							      <option>3</option>
+							      <option>4</option>
+							      <option>5</option> -->
+							    </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+
+
+                         <div id="div_id_privod" class="form-group required">
+                            <label for="carPrivodSelect"  class="control-label col-md-4  requiredField">Privod</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                            	<select class="form-control" id="carPrivodSelect">
+							      <option>Front</option>
+							      <option>Back</option>
+
+<!-- 							      <option>3</option>
+							      <option>4</option>
+							      <option>5</option> -->
+							    </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+
+
+                        <div id="div_id_privod" class="form-group required">
+                            <label for="carPrivodSelect"  class="control-label col-md-4  requiredField">Wheel</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                            	<select class="form-control" id="carPrivodSelect">
+							      <option>Left</option>
+							      <option>Right</option>
+
+<!-- 							      <option>3</option>
+							      <option>4</option>
+							      <option>5</option> -->
+							    </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+<!-- 
+                        <div id="div_id_email" class="form-group required">
+                            <label for="id_email" class="control-label col-md-4  requiredField"> E-mail<span class="asteriskField">*</span> </label>
+                            <div class="controls col-md-8 ">
+                                <input class="input-md emailinput form-control" id="id_email" name="email" placeholder="Your current email address" style="margin-bottom: 10px" type="email" />
+                            </div>     
+                        </div>
+                        <div id="div_id_password1" class="form-group required">
+                            <label for="id_password1" class="control-label col-md-4  requiredField">Password<span class="asteriskField">*</span> </label>
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_password1" name="password1" placeholder="Create a password" style="margin-bottom: 10px" type="password" />
+                            </div>
+                        </div>
+                        <div id="div_id_password2" class="form-group required">
+                             <label for="id_password2" class="control-label col-md-4  requiredField"> Re:password<span class="asteriskField">*</span> </label>
+                             <div class="controls col-md-8 ">
+                                <input class="input-md textinput textInput form-control" id="id_password2" name="password2" placeholder="Confirm your password" style="margin-bottom: 10px" type="password" />
+                            </div>
+                        </div>
+                        <div id="div_id_name" class="form-group required"> 
+                            <label for="id_name" class="control-label col-md-4  requiredField"> full name<span class="asteriskField">*</span> </label> 
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_name" name="name" placeholder="Your Frist name and Last name" style="margin-bottom: 10px" type="text" />
+                            </div>
+                        </div>
+                        <div id="div_id_gender" class="form-group required">
+                            <label for="id_gender"  class="control-label col-md-4  requiredField"> Gender<span class="asteriskField">*</span> </label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                                 <label class="radio-inline"> <input type="radio" name="gender" id="id_gender_1" value="M"  style="margin-bottom: 10px">Male</label>
+                                 <label class="radio-inline"> <input type="radio" name="gender" id="id_gender_2" value="F"  style="margin-bottom: 10px">Female </label>
+                            </div>
+                        </div>
+                        <div id="div_id_company" class="form-group required"> 
+                            <label for="id_company" class="control-label col-md-4  requiredField"> company name<span class="asteriskField">*</span> </label>
+                            <div class="controls col-md-8 "> 
+                                 <input class="input-md textinput textInput form-control" id="id_company" name="company" placeholder="your company name" style="margin-bottom: 10px" type="text" />
+                            </div>
+                        </div> 
+                        <div id="div_id_catagory" class="form-group required">
+                            <label for="id_catagory" class="control-label col-md-4  requiredField"> catagory<span class="asteriskField">*</span> </label>
+                            <div class="controls col-md-8 "> 
+                                 <input class="input-md textinput textInput form-control" id="id_catagory" name="catagory" placeholder="skills catagory" style="margin-bottom: 10px" type="text" />
+                            </div>
+                        </div> 
+                        <div id="div_id_number" class="form-group required">
+                             <label for="id_number" class="control-label col-md-4  requiredField"> contact number<span class="asteriskField">*</span> </label>
+                             <div class="controls col-md-8 ">
+                                 <input class="input-md textinput textInput form-control" id="id_number" name="number" placeholder="provide your number" style="margin-bottom: 10px" type="text" />
+                            </div> 
+                        </div> 
+                        <div id="div_id_location" class="form-group required">
+                            <label for="id_location" class="control-label col-md-4  requiredField"> Your Location<span class="asteriskField">*</span> </label>
+                            <div class="controls col-md-8 ">
+                                <input class="input-md textinput textInput form-control" id="id_location" name="location" placeholder="Your Pincode and City" style="margin-bottom: 10px" type="text" />
+                            </div> 
+                        </div> -->
+
+                    </div>
+                    	
+
+                    <div id="apart">
+                    	
+                    	 <div id="div_id_estType" class="form-group required">
+                            <label for="estTypeSelect"  class="control-label col-md-4  requiredField">Type</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                            	<select class="form-control" id="estTypeSelect">
+							      <option>Apartment</option>
+							      <option>House</option>
+
+<!-- 							      <option>3</option>
+							      <option>4</option>
+							      <option>5</option> -->
+							    </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+
+                         <div class="form-group">
+                            <div class="controls col-md-offset-4 col-md-8 ">
+                                <div id="div_id_optionEst" class="checkbox required">
+                                    <label for="id_terms" class=" requiredField">
+                                         <input class="input-ms checkboxinput" id="id_terms" name="terms" style="margin-bottom: 10px margin-right: 5%" type="checkbox" />
+                                         Buy
+                                    </label>
+
+                                    <label for="id_terms" class=" requiredField">
+                                         <input class="input-ms checkboxinput" id="id_terms" name="terms" style="margin-bottom: 10px" type="checkbox" />
+                                         Rent
+                                    </label>
+                                </div> 
+                                    
+                            </div>
+                        </div> 
+
+
+                        <div id="div_id_year" class="form-group required"> 
+                            <label for="id_year" class="control-label col-md-4  requiredField"> Area</label> 
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_year" name="year" placeholder="Area (sq m)" style="margin-bottom: 10px" type="text" />
+                            </div>
+                        </div>
+
+                        <div id="div_id_year" class="form-group required"> 
+                            <label for="id_year" class="control-label col-md-4  requiredField"> Rooms</label> 
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_year" name="year" placeholder="Rooms (#)" style="margin-bottom: 10px" type="text" />
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+
+
+                        <div class="form-group">
+                            <div class="controls col-md-offset-4 col-md-8 ">
+                                <div id="div_id_terms" class="checkbox required">
+                                    <label for="id_terms" class=" requiredField">
+                                         <input class="input-ms checkboxinput" id="id_terms" name="terms" style="margin-bottom: 10px" type="checkbox" />
+                                         Agree with the terms and conditions
+                                    </label>
+                                </div> 
+                                    
+                            </div>
+                        </div> 
+                        <div class="form-group"> 
+                            <div class="aab controls col-md-4 "></div>
+                            <div class="controls col-md-8 ">
+                                <input type="submit" name="Seacrh" value="Search" class="btn btn-primary btn btn-info" id="submit-id-signup" />
+                                <!-- or <input type="button" name="Signup" value="Sign Up with Facebook" class="btn btn btn-primary" id="button-id-signup" /> -->
+                            </div>
+                        </div> 
+                            
+                    </form>
+
+                </form>
+            </div>
+        </div>
+    </div> 
+</div>
+    
+
+
+
+
+
+</div>      
+</body>
+</html>
