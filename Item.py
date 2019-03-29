@@ -37,7 +37,7 @@ class Car(Item):
         self.engine_volume = self.params.get("Объём двигателя, л", '')
         self.status = self.params.get("Состояние", '')
         #self.km = self.params.get("Пробег, км", '')
-        self.brand = self.params.get("Мартка", '')
+        self.brand = self.params.get("Марка", '')
         self.model = self.params.get("Модель", '')
         self.corpus_type = self.params.get("Тип кузова", '')
         self.kpp = self.params.get("Коробка передач", '')
