@@ -15,6 +15,3 @@ class BaseApi(ABC):
     @abc.abstractmethod
     def register_api(self):
         pass
-    @abc.abstractmethod
-    def send_request(self):
-        pass

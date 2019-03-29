@@ -1,3 +1,8 @@
+import json
+from typing import List
+import requests
+from Item import Car
+from website_parsers.ads_api.constants import ADSResponseCode
 from website_parsers.base_api import BaseApi
 SLEEP_TIME = 5 # 5 seconds between requests
 import os
@@ -9,9 +14,44 @@ class ADS_API(BaseApi):
     def __init__(self):
         super().__init__('ads', sleep_time=SLEEP_TIME)
         self.access_token = ACCESS_TOKEN
+        self.mail = 'lisch.batanina@icloud.com'
 
     def register_api(self):
         pass
 
-    def send_request(self):
-        url = f'http://ads-api.ru/main/api?user=user@localhost.net&token={self.}'
+    def send_auto_request(self, mark: str, model: str, engine: str='', mileage: str='',
+                     gearbox: str='', year:str='', date_from:str='')->List[Car]:
+        """
+        Sends request
+        :param mark: of automobile
+        :param model: model of automobile
+        :param engine: type of engine
+        :param mileage: amount of kilometers passed
+        :param gearbox: automative or not [механика, автомат, робот, вариатор]
+        :param year: year of automobile
+        :param date_from: start date of adverts
+        :return: List of Car objects
+        """
+        url = f'http://ads-api.ru/main/api?user={self.mail}&token={self.access_token}'
+        q =f'{mark} {model}'
+        if year:
+            q += f' {year}г'
+        if mileage:
+            q += f' пробег {mileage}км'
+        if engine:
+            q += f' двигатель {engine}'
+        if gearbox:
+            q += f' {gearbox} КПП'
+
+        url += f'&q={q}'
+        if date_from:
+            url += f'&date1={date_from}'
+
+        response = requests.get(url)
+        if response.status_code == ADSResponseCode.SUCCESS:
+            response_body = response.text
+            response_data = json.loads(response_body)
+            cars_dict = response_data.get('data', [])
+            cars = [Car(car_dict) for car_dict in cars_dict]
+            return cars
+        return []

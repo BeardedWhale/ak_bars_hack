@@ -20,10 +20,6 @@ class Item(ABC):
         self.cat2 = json.get("cat2", '')# Название категории второго уровня, например, Квартиры
         self.param_xxx = json.get("param_xxx", '') # Дополнительный параметр с кодом xxx, коды параметров смотрите в разделе Параметры всех категорий
 
-    @abc.abstractmethod
-    def get_adverts_from_ads_api(self):
-        pass
-
 
 class Car(Item):
     def __init__(self, json):
