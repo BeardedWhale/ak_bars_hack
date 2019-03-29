@@ -57,6 +57,7 @@ def params_match(car, estimated_car):
     
     return True
 
+
 def filter(cars, estimated_car):
     """ Check list of cars to match required filters """
     matched_cars = []
@@ -96,3 +97,19 @@ def estimate_car(estimated_car: Car, number_of_candidates=10):
 car = Car({'params':{"Модель": "Focus", 'Марка': 'Ford', 'Тип двигателя': 'Бензин', 'Объём двигателя, л': 1.8, 'Год выпуска': 2003}})
 filtered_cars = estimate_car(car)
 print('kek')
+
+def car_similarity_score(car, other_car):
+    score = 0
+    if car.brand == other_car.brand:
+        score += 0.2
+    if car.model == other_car.model:
+        score += 0.2
+    if car.engine_type == other_car.engine_type:
+        score += 0.15
+    if car.engine_volume == other_car.engine_type:
+        score += 0.15
+    if car.year == other_car.year:
+        score += 0.15
+    if car.kpp == other_car.kpp:
+        score += 0.15
+    return score

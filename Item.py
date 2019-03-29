@@ -1,13 +1,13 @@
 import abc
 from abc import ABC
 from typing import Dict
-
-ADS_API = "ads_api"
+from constants import ADS_API
+from constants import CRWL_API
 
 class Item(ABC):
     def __init__(self, api_name, json: Dict):
         if api_name == ADS_API:
-            self.init_ads(json)
+            # self.init_ads(json)
             self.params = json.get('self.params', {})
             if not self.params:
                 self.params = {}
@@ -19,7 +19,7 @@ class Item(ABC):
             self.nedvigimost_type_id = json.get("nedvigimost_type_id", '')  # ID типа недвижимости: 1 - Продам, 2 - Сдам, 3 - Куплю или 4 - Сниму
             self.avitoid = json.get('avitoid', '')  # ID объявления на сайте-источнике
             self.source_id = json.get("source_id", '')  # ID cайта-источника в нашей системе
-            self.self.params = json.get("self.params", '')  # Дополнительные параметры объявления
+            self.params = json.get("self.params", '')  # Дополнительные параметры объявления
             self.cat1_id = json.get("cat1_id", '')  # ID категории первого уровня, например, категория Недвижимость имеет значение 1
             self.cat2_id = json.get("cat2_id", '')  # ID категории второго уровня, например, категория Квартиры имеет значение 2
             self.cat1 = json.get('cat1', '')  # Название категории первого уровня, например, Недвижимость
@@ -30,7 +30,7 @@ class Car(Item):
     def __init__(self, api_name, json):
         super().__init__(api_name, json)
         if api_name == ADS_API:
-            self.init_ads(json)
+            self.init_ads()
 
     def init_ads(self):
         self.engine_type = self.params.get("Тип двигателя", '')  #Бензин, Дизель, Гибрид или Электро
