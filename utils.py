@@ -99,10 +99,13 @@ def car_similarity_score(car, other_car):
         score += 0.2
     if car.engine_type == other_car.engine_type:
         score += 0.15
-    if car.engine_volume == other_car.engine_type:
-        score += 0.15
-    if car.year == other_car.year:
-        score += 0.15
     if car.kpp == other_car.kpp:
         score += 0.15
+
+    if isinstance(car.engine_volume, int) and isinstance(other_car.engine_volume, int):
+        score -= 0.07 * abs(car.engine_volume - other_car.engine_volume)
+    if isinstance(car.engine_horse_power, int) and isinstance(other_car.engine_horse_power, int):
+        score -= 0.07 * abs(car.engine_horse_power - other_car.engine_horse_power)
+    if isinstance(car.year, int) and isinstance(other_car.year, int):
+        score -= 0.07 * abs(car.year - other_car.year)
     return score
