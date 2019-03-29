@@ -1,5 +1,6 @@
 import abc
 from abc import ABC
+from datetime import timedelta
 
 
 class BaseApi(ABC):
@@ -10,7 +11,7 @@ class BaseApi(ABC):
         :param sleep_time:  time between requests
         """
         self.name = name
-        self.sleep_time = sleep_time
+        self.sleep_time = timedelta(seconds=sleep_time)
 
     @abc.abstractmethod
     def register_api(self):
