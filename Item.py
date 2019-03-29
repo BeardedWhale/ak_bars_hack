@@ -11,7 +11,7 @@ class Item(ABC):
         self.price = json.get("price", '')  # Цена
         self.time = json.get("time", '')# Дата и время добавления объявления в нашу систему, либо время обновления. Время московское
         self.nedvigimost_type_id = json.get("nedvigimost_type_id", '')  # ID типа недвижимости: 1 - Продам, 2 - Сдам, 3 - Куплю или 4 - Сниму
-        self.avitoid = json.json['avitoid']  # ID объявления на сайте-источнике
+        self.avitoid = json.get('avitoid','')  # ID объявления на сайте-источнике
         self.source_id = json.get("source_id", '') # ID cайта-источника в нашей системе
         self.params = json.get("params", '') # Дополнительные параметры объявления
         self.cat1_id = json.get("cat1_id", '') # ID категории первого уровня, например, категория Недвижимость имеет значение 1
@@ -24,6 +24,9 @@ class Item(ABC):
 class Car(Item):
     def __init__(self, json):
         super().__init__(json)
+        params = json.get('params', {})
+        if not params:
+            params = {}
         self.engine_type = json.get("params", {}).get("Тип двигателя", '') #Бензин, Дизель, Гибрид или Электро
         self.engine_volume = json.get("params", {}).get("Объём двигателя, л", '')
         self.status = json.get("params", {}).get("Состояние", '')

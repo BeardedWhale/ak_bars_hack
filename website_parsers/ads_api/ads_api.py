@@ -61,6 +61,6 @@ class ADS_API(BaseApi):
             response_body = response.text
             response_data = json.loads(response_body)
             cars_dict = response_data.get('data', [])
-            # cars = [Car(car_dict) for car_dict in cars_dict]
+            cars = [Car(car_dict) for car_dict in cars_dict]
             return cars_dict
         return []
