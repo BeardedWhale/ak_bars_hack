@@ -1,14 +1,15 @@
 import abc
+import re
 from abc import ABC
 from typing import Dict
-from constants import ADS_API
-from constants import CRWL_API
+# from constants import ADS_API_KEY
+from constants import ADS_API_KEY
 
 class Item(ABC):
     def __init__(self, api_name, json: Dict):
-        if api_name == ADS_API:
+        if api_name == ADS_API_KEY:
             # self.init_ads(json)
-            self.params = json.get('self.params', {})
+            self.params = json.get('params', {})
             if not self.params:
                 self.params = {}
             self.id = json.get("id", '')  # Идентификатор записи
@@ -19,7 +20,6 @@ class Item(ABC):
             self.nedvigimost_type_id = json.get("nedvigimost_type_id", '')  # ID типа недвижимости: 1 - Продам, 2 - Сдам, 3 - Куплю или 4 - Сниму
             self.avitoid = json.get('avitoid', '')  # ID объявления на сайте-источнике
             self.source_id = json.get("source_id", '')  # ID cайта-источника в нашей системе
-            self.params = json.get("self.params", '')  # Дополнительные параметры объявления
             self.cat1_id = json.get("cat1_id", '')  # ID категории первого уровня, например, категория Недвижимость имеет значение 1
             self.cat2_id = json.get("cat2_id", '')  # ID категории второго уровня, например, категория Квартиры имеет значение 2
             self.cat1 = json.get('cat1', '')  # Название категории первого уровня, например, Недвижимость
@@ -29,26 +29,44 @@ class Item(ABC):
 class Car(Item):
     def __init__(self, api_name, json):
         super().__init__(api_name, json)
-        if api_name == ADS_API:
+        if api_name == ADS_API_KEY:
             self.init_ads()
 
     def init_ads(self):
         self.engine_type = self.params.get("Тип двигателя", '')  #Бензин, Дизель, Гибрид или Электро
-        self.engine_volume = self.params.get("Объём двигателя, л", '')
+        engine_volume = self.params.get("Объём двигателя, л", '')
+        if engine_volume:
+            try:
+                engine_volume = float(re.findall("\d+\.\d+", engine_volume)[0])
+            except Exception as e:
+                engine_volume = 0.0
+                pass
+        else:
+            engine_volume = 0.0
+        self.engine_volume = engine_volume
         self.status = self.params.get("Состояние", '')
         #self.km = self.params.get("Пробег, км", '')
         self.brand = self.params.get("Марка", '')
-        self.model = self.params.get("Модель", '')
+        car_model = self.params.get("Модель", '')
+        car_model = car_model.strip()
+        self.model = car_model
         self.corpus_type = self.params.get("Тип кузова", '')
         self.kpp = self.params.get("Коробка передач", '')
         self.circle = self.params.get("Руль", '') #левый / правый
-        self.year = self.params.get("Год выпуска", '0')
-        self.engine_horse_power = self.params.get("Мощность двигателя, л.с.", '')
+        year = self.params.get("Год выпуска", '0')
+        year = int(year)
+        self.year = year
+        horse_power = self.params.get("Мощность двигателя, л.с.", '0')
+        horse_power = float(re.findall("\d+", horse_power)[0])
+        self.engine_horse_power = horse_power
         self.color = self.params.get("Цвет", '')
         self.owners = self.params.get("Владельцев по ПТС", -1)
         self.wd = self.params.get("Привод", '')
         self.auto_type = self.params.get("Тип автомобиля", '')
-        self.number_of_doors = self.params.get("Количество дверей", '0')
+        number_of_doors = self.params.get("Количество дверей", '0')
+        number_of_doors = int(re.findall("\d+", number_of_doors)[0])
+        self.number_of_doors = number_of_doors
+
 
     def init_crwl(self, json):
         self.dt = json.get("dt", '')
