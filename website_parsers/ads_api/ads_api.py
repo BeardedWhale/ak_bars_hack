@@ -2,12 +2,12 @@ import json
 import time
 from typing import List, Tuple
 import requests
-from Item import Car, Item
+from Item import Car
 from website_parsers.ads_api.constants import ADSResponseCode, REAL_ESTATE_CATEGORIES
 from website_parsers.base_api import BaseApi
 from datetime import datetime
 from datetime import timedelta
-SLEEP_TIME = 10 # 5 seconds between requests
+SLEEP_TIME = 10 # 20 seconds between requests
 import os
 ACCESS_TOKEN = '6d743e61f3391fa046d3a2dbc763b038'
 
@@ -15,7 +15,7 @@ ACCESS_TOKEN = '6d743e61f3391fa046d3a2dbc763b038'
 class ADS_API(BaseApi):
 
     def __init__(self):
-        super().__init__('ads', sleep_time=SLEEP_TIME)
+        super().__init__('ads_api', sleep_time=SLEEP_TIME)
         self.access_token = ACCESS_TOKEN
         self.mail = 'lisch.batanina@icloud.com'
         self.last_request_time = datetime.now() - timedelta(seconds=10)
@@ -38,8 +38,8 @@ class ADS_API(BaseApi):
         """
         curr_time = datetime.now()
         time_diff = curr_time - self.last_request_time
-        if time_diff > self.sleep_time:
-            time.sleep(abs(time_diff.seconds - self.sleep_time.seconds) + 5)
+        if time_diff < self.sleep_time:
+            time.sleep(self.sleep_time.seconds - time_diff.seconds)
         url = f'http://ads-api.ru/main/api?user={self.mail}&token={self.access_token}'
         q =f'{mark} {model}'
         if year:
@@ -64,7 +64,7 @@ class ADS_API(BaseApi):
             if not cars_dict:
                 return  [], start_id
             num_cars = len(cars_dict)
-            cars = [Car(car_dict) for car_dict in cars_dict]
+            cars = [Car(self.name, car_dict) for car_dict in cars_dict]
             start_id = cars_dict[num_cars-1]['id']
             return cars, start_id
         return [], start_id
