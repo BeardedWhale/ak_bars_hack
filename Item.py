@@ -5,46 +5,20 @@ from typing import Dict
 
 class Item(ABC):
     def __init__(self, json: Dict):
-        self.id = json['id']  # Идентификатор записи
-        self.url = json['url']  # Url объявления на сайте-источнике
-        self.title = json['title']  # Заголовок
-        self.price = json['price']  # Цена
-        self.time = json[
-            'time']  # Дата и время добавления объявления в нашу систему, либо время обновления. Время московское
-        self.phone = json['phone']  # Телефон
-        self.phone_operator = json['phone_operator']  # Название мобильного оператора
-        self.person = json['person']  # Персона для контактов, автор объявления
-        self.contactname = json[
-            'contactname']  # Контактное лицо. В основном бывает указано, если поле person содержит имя какой-нибудь компании.
-        self.person_type = json[
-            'person_type']  # Тип персоны для контактов. "Частное лицо", "Агентство" или "Частное лицо (фильтр)"
-        self.person_type_id = json[
-            'person_type_id']  # ID типа персоны для контактов. 1 - "Частное лицо", 2 - "Агентство" или 3 - "Частное лицо (фильтр)"
-        self.city = json['city']  # Регион и Город вместе, для получения отдельных значений смотрите поля region и city1
-        self.metro = json['metro']  # Метро или район
-        self.address = json['address']  # Адрес
-        self.description = json['description']  # Описание объявления
-        self.nedvigimost_type = json['nedvigimost_type']  # Тип недвижимости: Продам, Сдам, Куплю или Сниму
-        self.nedvigimost_type_id = json[
-            'nedvigimost_type_id']  # ID типа недвижимости: 1 - Продам, 2 - Сдам, 3 - Куплю или 4 - Сниму
-        self.avitoid = json['avitoid']  # ID объявления на сайте-источнике
-        self.source = json['source']  # Сайт-источник
-        self.source_id = json['source_id']  # ID cайта-источника в нашей системе
-        self.images = json['images']  # Картинки. Массив объектов, каждый из которых имеет поле imgurl - адрес картинки
-        self.params = json['params']  # Дополнительные параметры объявления
-        self.cat1_id = json['cat1_id']  # ID категории первого уровня, например, категория Недвижимость имеет значение 1
-        self.cat2_id = json['cat2_id']  # ID категории второго уровня, например, категория Квартиры имеет значение 2
-        self.cat1 = json['cat1']  # Название категории первого уровня, например, Недвижимость
-        self.cat2 = json['cat2']  # Название категории второго уровня, например, Квартиры
-        self.coords = json['coords']  # Объект, содержащий координаты объявления, поля lat и lng
-        self.region = json['region']  # Только название региона
-        self.city1 = json['city1']  # Только название города
-        self.param_xxx = json[
-            'param_xxx']  # Дополнительный параметр с кодом xxx, коды параметров смотрите в разделе Параметры всех категорий
-        self.count_ads_same_phone = json[
-            'count_ads_same_phone']  # Количество объявлений с тем же номером. Имеет значение только для категории Недвижимость и подкатегорий, для других равно null.
-        self.phone_protected = json[
-            'count_ads_same_phone']  # Показывает, защищен ли телефон, актуально для объявлений с avito и realty.yandex.ru, для других источников равно null.
+        self.id = json.get("id", '')  # Идентификатор записи
+        self.url = json.get("url", '')  # Url объявления на сайте-источнике
+        self.title = json.get("title", '')  # Заголовок
+        self.price = json.get("price", '')  # Цена
+        self.time = json.get("time", '')# Дата и время добавления объявления в нашу систему, либо время обновления. Время московское
+        self.nedvigimost_type_id = json.get("nedvigimost_type_id", '')  # ID типа недвижимости: 1 - Продам, 2 - Сдам, 3 - Куплю или 4 - Сниму
+        self.avitoid = json.json['avitoid']  # ID объявления на сайте-источнике
+        self.source_id = json.get("source_id", '') # ID cайта-источника в нашей системе
+        self.params = json.get("params", '') # Дополнительные параметры объявления
+        self.cat1_id = json.get("cat1_id", '') # ID категории первого уровня, например, категория Недвижимость имеет значение 1
+        self.cat2_id = json.get("cat2_id", '') # ID категории второго уровня, например, категория Квартиры имеет значение 2
+        self.cat1 = json.get('cat1', '') # Название категории первого уровня, например, Недвижимость
+        self.cat2 = json.get("cat2", '')# Название категории второго уровня, например, Квартиры
+        self.param_xxx = json.get("param_xxx", '') # Дополнительный параметр с кодом xxx, коды параметров смотрите в разделе Параметры всех категорий
 
     @abc.abstractmethod
     def get_adverts_from_ads_api(self):
@@ -54,6 +28,74 @@ class Item(ABC):
 class Car(Item):
     def __init__(self, json):
         super().__init__(json)
+        self.engine_type = json.get("params", {}).get("Тип двигателя", '') #Бензин, Дизель, Гибрид или Электро
+        self.engine_volume = json.get("params", {}).get("Объём двигателя, л", '')
+        self.status = json.get("params", {}).get("Состояние", '')
+        #self.km = json.get("params", {}).get("Пробег, км", '')
+        self.brand = json.get("params", {}).get("Мартка", '')
+        self.model = json.get("params", {}).get("Модель", '')
+        self.corpus_type = json.get("params", {}).get("Тип кузова", '')
+        self.kpp = json.get("params", {}).get("Коробка передач", '')
+        self.circle = json.get("params", {}).get("Руль", '') #левый / правый
+        self.year = json.get("params", {}).get("Год выпуска", '')
+        self.engine_horse_power = json.get("params", {}).get("Мощность двигателя, л.с.", '')
+        self.color = json.get("params", {}).get("Цвет", '')
+        self.owners = json.get("params", {}).get("Владельцев по ПТС", -1)
+        self.wd = json.get("params", {}).get("Привод", '')
+        self.auto_type = json.get("params", {}).get("Тип автомобиля", '')
+        self.number_of_doors = json.get("params", {}).get("Количество дверей", '')
 
-# class House(Item):
-#
+
+class House(Item):
+    def __init__(self, json):
+        super().__init__(json)
+        self.region = json['region']  # Только название региона
+        self.city1 = json['city1']  # Только название города
+        self.metro = json['Тип обх']  # Метро или район
+
+
+class Commercial_house(House): #catid = 7
+    def __init__(self, json):
+        super().__init__(json)
+        self.engine_type = json.get("params", {}).get('Вид объекта', '') #Гостиница, Офисное помещение, Помещение свободного назначения, Производственное помещение, Складское помещение, Торговое помещение
+        self.engine_type = json.get("params", {}).get('Площадь', '')
+        self.engine_type = json.get("params", {}).get('Адрес', '')
+        self.engine_type = json.get("params", {}).get('Этаж', '')
+        self.engine_type = json.get("params", {}).get('Этажность здания', '')
+
+
+class Flat(House): #catid = 2
+    def __init__(self, json):
+        super().__init__(json)
+        self.engine_type = json.get("params", {}).get('Количество комнат', '') #Студия / 1 / 2 / ... / >9
+        self.engine_type = json.get("params", {}).get('Вид объекта', '') #Вторичка / Новостройка
+        self.engine_type = json.get("params", {}).get('Тип дома', '') #Кирпичный / Панельный / Блочный / Монолитный / Деревянный
+        self.engine_type = json.get("params", {}).get('Этаж', '')
+        self.engine_type = json.get("params", {}).get('Этажей в доме', '')
+        self.engine_type = json.get("params", {}).get('Площадь', '')
+        self.engine_type = json.get("params", {}).get('Адрес', '')
+        self.engine_type = json.get("params", {}).get('Площадь кухни', '')
+        self.engine_type = json.get("params", {}).get('Жилая площадь', '')
+
+
+class Room(House):  # catid = 3
+    def __init__(self, json):
+        super().__init__(json)
+        self.engine_type = json.get("params", {}).get('Комнат в квартире', '')  # 1 / 2 / ... / >9
+        self.engine_type = json.get("params", {}).get('Тип дома', '')  # Кирпичный / Панельный / Блочный / Монолитный / Деревянный
+        self.engine_type = json.get("params", {}).get('Этаж', '')
+        self.engine_type = json.get("params", {}).get('Этажей в доме', '')
+        self.engine_type = json.get("params", {}).get('Площадь комнаты', '')
+        self.engine_type = json.get("params", {}).get('Адрес', '')
+
+
+class Living_house(House): # catid = 4
+    def __init__(self, json):
+        super().__init__(json)
+        self.engine_type = json.get("params", {}).get('Вид объекта', '') # Дом / Дача / Коттедж / Таунхаус
+        self.engine_type = json.get("params", {}).get('Этажей в доме', '')
+        self.engine_type = json.get("params", {}).get('Материал стен', '')
+        self.engine_type = json.get("params", {}).get('Площадь дома', '')
+        self.engine_type = json.get("params", {}).get('Площадь участка', '')
+        self.engine_type = json.get("params", {}).get('Расстояние до города', '')
+
