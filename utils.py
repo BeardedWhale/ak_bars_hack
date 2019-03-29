@@ -1,4 +1,7 @@
+import datetime
 import re
+import numpy as np
+from sklearn.ensemble import GradientBoostingRegressor
 
 from Item import Car
 from constants import *
@@ -113,3 +116,37 @@ def car_similarity_score(car, other_car):
     if car.kpp == other_car.kpp:
         score += 0.15
     return score
+
+def get_price(car, list_of_cars):
+    """
+
+    :param car: car to predict price for
+    :param list_of_cars: similar advertisements/training data
+    :return: float
+    """
+    gbr = GradientBoostingRegressor(loss='ls', max_depth=6)
+    gbr.fit(build_train_data(list_of_cars))
+    X = np.array(get_features(car))
+
+    return gbr.predict(X.reshape(1, len(X)))[0]
+
+
+def build_train_data(list_of_cars):
+    data = []
+    prices = []
+    for car in list_of_cars:
+        data.append(get_features(car))
+        prices.append(car.price)
+    return data, prices
+
+
+def get_features(car):
+    year = datetime.datetime.now().year
+    # features =['year_model', 'mileage', 'engine_type_diesel', 'engine_type_fuel', 'engine_type_gybrid',
+    #           'engine_type_electric', 'kpp_automat', 'kpp_mechanic', 'kpp_variator', 'kpp_gybrib']
+    # Бензин/Дизель/Гибрид/Электро
+    # Механика/ Автомат/Робот /Вариатор
+    return [year - car.year, car.km, car.engine_type.lower() == 'дизель', car.engine_type.lower() == 'бензин',
+            car.engine_type.lower() == 'гибрид', car.engine_type.lower() == 'электро',
+            car.kpp.lower() == 'автомат', car.kpp.lower() == 'механика', car.kpp.lower() == 'вариатор',
+            car.kpp.lower() == 'гибрид']
