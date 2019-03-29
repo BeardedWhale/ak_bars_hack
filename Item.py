@@ -53,45 +53,42 @@ class House(Item):
 class Commercial_house(House): #catid = 7
     def __init__(self, json):
         super().__init__(json)
-        self.engine_type = json.get("params", {}).get('Вид объекта', '') #Гостиница, Офисное помещение, Помещение свободного назначения, Производственное помещение, Складское помещение, Торговое помещение
-        self.engine_type = json.get("params", {}).get('Площадь', '')
-        self.engine_type = json.get("params", {}).get('Адрес', '')
-        self.engine_type = json.get("params", {}).get('Этаж', '')
-        self.engine_type = json.get("params", {}).get('Этажность здания', '')
+        self.type = json.get("params", {}).get('Вид объекта', '') #Гостиница, Офисное помещение, Помещение свободного назначения, Производственное помещение, Складское помещение, Торговое помещение
+        self.area = json.get("params", {}).get('Площадь', '')
+        self.floor = json.get("params", {}).get('Этаж', '')
+        self.floors_in_house = json.get("params", {}).get('Этажность здания', '')
 
 
 class Flat(House): #catid = 2
     def __init__(self, json):
         super().__init__(json)
-        self.engine_type = json.get("params", {}).get('Количество комнат', '') #Студия / 1 / 2 / ... / >9
-        self.engine_type = json.get("params", {}).get('Вид объекта', '') #Вторичка / Новостройка
-        self.engine_type = json.get("params", {}).get('Тип дома', '') #Кирпичный / Панельный / Блочный / Монолитный / Деревянный
-        self.engine_type = json.get("params", {}).get('Этаж', '')
-        self.engine_type = json.get("params", {}).get('Этажей в доме', '')
-        self.engine_type = json.get("params", {}).get('Площадь', '')
-        self.engine_type = json.get("params", {}).get('Адрес', '')
-        self.engine_type = json.get("params", {}).get('Площадь кухни', '')
-        self.engine_type = json.get("params", {}).get('Жилая площадь', '')
+        self.number_of_rooms = json.get("params", {}).get('Количество комнат', '') #Студия / 1 / 2 / ... / >9
+        self.house_type = json.get("params", {}).get('Вид объекта', '') #Вторичка / Новостройка
+        self.house_type = json.get("params", {}).get('Тип дома', '') #Кирпичный / Панельный / Блочный / Монолитный / Деревянный
+        self.floor = json.get("params", {}).get('Этаж', '')
+        self.number_of_floors = json.get("params", {}).get('Этажей в доме', '')
+        self.flat_area = json.get("params", {}).get('Площадь', '')
+        self.kitchen_area = json.get("params", {}).get('Площадь кухни', '')
+        self.living_area = json.get("params", {}).get('Жилая площадь', '')
 
 
 class Room(House):  # catid = 3
     def __init__(self, json):
         super().__init__(json)
-        self.engine_type = json.get("params", {}).get('Комнат в квартире', '')  # 1 / 2 / ... / >9
-        self.engine_type = json.get("params", {}).get('Тип дома', '')  # Кирпичный / Панельный / Блочный / Монолитный / Деревянный
-        self.engine_type = json.get("params", {}).get('Этаж', '')
-        self.engine_type = json.get("params", {}).get('Этажей в доме', '')
-        self.engine_type = json.get("params", {}).get('Площадь комнаты', '')
-        self.engine_type = json.get("params", {}).get('Адрес', '')
+        self.rooms_in_flat = json.get("params", {}).get('Комнат в квартире', '')  # 1 / 2 / ... / >9
+        self.house_type = json.get("params", {}).get('Тип дома', '')  # Кирпичный / Панельный / Блочный / Монолитный / Деревянный
+        self.floor = json.get("params", {}).get('Этаж', '')
+        self.number_of_floors = json.get("params", {}).get('Этажей в доме', '')
+        self.room_area = json.get("params", {}).get('Площадь комнаты', '')
 
 
 class Living_house(House): # catid = 4
     def __init__(self, json):
         super().__init__(json)
-        self.engine_type = json.get("params", {}).get('Вид объекта', '') # Дом / Дача / Коттедж / Таунхаус
-        self.engine_type = json.get("params", {}).get('Этажей в доме', '')
-        self.engine_type = json.get("params", {}).get('Материал стен', '')
-        self.engine_type = json.get("params", {}).get('Площадь дома', '')
-        self.engine_type = json.get("params", {}).get('Площадь участка', '')
-        self.engine_type = json.get("params", {}).get('Расстояние до города', '')
+        self.house_type = json.get("params", {}).get('Вид объекта', '') # Дом / Дача / Коттедж / Таунхаус
+        self.number_of_floors = json.get("params", {}).get('Этажей в доме', '')
+        self.wall_material = json.get("params", {}).get('Материал стен', '')
+        self.house_area = json.get("params", {}).get('Площадь дома', '')
+        self.land_area = json.get("params", {}).get('Площадь участка', '')
+        self.distance_to_city = json.get("params", {}).get('Расстояние до города', '')
 
