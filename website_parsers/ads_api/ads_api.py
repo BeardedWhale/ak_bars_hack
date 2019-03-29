@@ -7,7 +7,7 @@ from website_parsers.ads_api.constants import ADSResponseCode, REAL_ESTATE_CATEG
 from website_parsers.base_api import BaseApi
 from datetime import datetime
 from datetime import timedelta
-SLEEP_TIME = 10 # 20 seconds between requests
+SLEEP_TIME = 10  # 20 seconds between requests
 import os
 ACCESS_TOKEN = '6d743e61f3391fa046d3a2dbc763b038'
 
@@ -15,10 +15,7 @@ ACCESS_TOKEN = '6d743e61f3391fa046d3a2dbc763b038'
 class ADS_API(BaseApi):
 
     def __init__(self):
-        super().__init__('ads_api', sleep_time=SLEEP_TIME)
-        self.access_token = ACCESS_TOKEN
-        self.mail = 'lisch.batanina@icloud.com'
-        self.last_request_time = datetime.now() - timedelta(seconds=10)
+       c
 
     def register_api(self):
         pass

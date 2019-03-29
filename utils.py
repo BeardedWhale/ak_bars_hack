@@ -113,5 +113,3 @@ def get_cars_candidates(car:Car, number_of_candidates: int)->List[Car]:
     ranked = list(sorted(filtered_cars, key=lambda x: car_similarity_score(car, x), reverse=True))
     top_k = ranked[:number_of_candidates]
     return top_k
-
-
