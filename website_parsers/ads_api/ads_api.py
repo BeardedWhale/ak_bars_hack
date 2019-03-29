@@ -39,8 +39,6 @@ class ADS_API(BaseApi):
         curr_time = datetime.now()
         time_diff = curr_time - self.last_request_time
         if time_diff < self.sleep_time:
-            time_to_sleep = self.sleep_time.seconds - time_diff.seconds
-            print(time_to_sleep)
             time.sleep(self.sleep_time.seconds - time_diff.seconds)
         url = f'http://ads-api.ru/main/api?user={self.mail}&token={self.access_token}'
         q =f'{mark} {model}'

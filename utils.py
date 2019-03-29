@@ -1,4 +1,5 @@
 import re
+from typing import List
 
 from Item import Car
 from constants import *
@@ -19,14 +20,13 @@ def params_match(car, estimated_car):
     # Engine type match: gasoline, diesel ...
     if estimated_car.engine_type:
         if car_engine_type != estimated_car.engine_type:
-            print(f'{car.engine_type}, {estimated_car.engine_type}')
             return False
-    
+
     # Engine volume difference in range
     if estimated_car.engine_volume:
         if abs(car.engine_volume - estimated_car.engine_volume) > max_engine_vol_diff:
             return False
-    
+
     # Year of production doesn't differ much
     if estimated_car.year:
         if abs(car.year - estimated_car.year) > max_year_diff:
@@ -46,7 +46,7 @@ def params_match(car, estimated_car):
     if estimated_car.engine_horse_power:
         if abs(car.engine_horse_power - estimated_car.engine_horse_power) > max_engine_hp_diff:
             return False
-    
+
     return True
 
 
@@ -81,17 +81,12 @@ def estimate_car(estimated_car: Car, number_of_candidates=10):
         filtered = filter(cars, estimated_car)
         retrieved_cars.extend(filtered)
         start_id = last_id
-        print(filtered)
     return retrieved_cars
 
 
 
-car = Car(ADS_API_KEY, {'params':{"Модель": "Focus", 'Марка': 'Ford', 'Тип двигателя': 'Бензин', 'Объём двигателя, л': 1.8, 'Год выпуска': 2003}})
-filtered_cars = estimate_car(car)
-print('kek')
-print(filtered_cars)
 
-def car_similarity_score(car, other_car):
+def car_similarity_score(car, other_car)-> int:
     score = 0
     if car.brand == other_car.brand:
         score += 0.2
@@ -109,3 +104,14 @@ def car_similarity_score(car, other_car):
     if isinstance(car.year, int) and isinstance(other_car.year, int):
         score -= 0.07 * abs(car.year - other_car.year)
     return score
+
+
+def get_cars_candidates(car:Car, number_of_candidates: int)->List[Car]:
+
+    number_of_retreived_cars = number_of_candidates + number_of_candidates//2
+    filtered_cars = estimate_car(car, number_of_retreived_cars)
+    ranked = list(sorted(filtered_cars, key=lambda x: car_similarity_score(car, x), reverse=True))
+    top_k = ranked[:number_of_candidates]
+    return top_k
+
+
