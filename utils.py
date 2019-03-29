@@ -42,6 +42,18 @@ def filter(cars, estimated_car):
     return matched_cars
 
 
-def car_similarity_score(car, other_car, api_name):
-    if api_name == ADS_API:
-        return 1
+def car_similarity_score(car, other_car):
+    score = 0
+    if car.brand == other_car.brand:
+        score += 0.2 
+    if car.model == other_car.model:
+        score += 0.2
+    if car.engine_type == other_car.engine_type:
+        score += 0.15
+    if car.engine_volume == other_car.engine_type:
+        score += 0.15
+    if car.year == other_car.year:
+        score += 0.15
+    if car.kpp == other_car.kpp:
+        score += 0.15
+    return score
