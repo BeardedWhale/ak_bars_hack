@@ -32,6 +32,7 @@ def params_match(car, estimated_car):
     
     return True
 
+
 def filter(cars, estimated_car):
     """ Check list of cars to match required filters """
     matched_cars = []
@@ -39,3 +40,8 @@ def filter(cars, estimated_car):
         if params_match(car, estimated_car):
             matched_cars.append(car)
     return matched_cars
+
+
+def car_similarity_score(car, other_car, api_name):
+    if api_name == ADS_API:
+        return 1

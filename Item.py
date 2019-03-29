@@ -1,8 +1,8 @@
 import abc
 from abc import ABC
 from typing import Dict
-
-ADS_API = "ads_api"
+from constants import ADS_API
+from constants import CRWL_API
 
 class Item(ABC):
     def __init__(self, api_name, json: Dict):
