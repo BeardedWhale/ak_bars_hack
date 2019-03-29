@@ -13,13 +13,13 @@ class Item(ABC):
         self.nedvigimost_type_id = json.get("nedvigimost_type_id", '')  # ID типа недвижимости: 1 - Продам, 2 - Сдам, 3 - Куплю или 4 - Сниму
         self.avitoid = json.get('avitoid', '')  # ID объявления на сайте-источнике
         self.source_id = json.get("source_id", '') # ID cайта-источника в нашей системе
-        self.self.params = json.get("self.params", '') # Дополнительные параметры объявления
+        self.params = json.get("self.params", '') # Дополнительные параметры объявления
         self.cat1_id = json.get("cat1_id", '') # ID категории первого уровня, например, категория Недвижимость имеет значение 1
         self.cat2_id = json.get("cat2_id", '') # ID категории второго уровня, например, категория Квартиры имеет значение 2
         self.cat1 = json.get('cat1', '') # Название категории первого уровня, например, Недвижимость
         self.cat2 = json.get("cat2", '')# Название категории второго уровня, например, Квартиры
         
-        self.params = json.get('self.params', {})
+        self.params = json.get('params', {})
         if not self.params:
             self.params = {}
 
@@ -28,23 +28,23 @@ class Car(Item):
     def __init__(self, json):
         super().__init__(json)
         
-            
+        # print(self.params)
         self.engine_type = self.params.get("Тип двигателя", '') #Бензин, Дизель, Гибрид или Электро
-        self.engine_volume = self.params.get("Объём двигателя, л", '')
+        self.engine_volume = self.params.get("Объём двигателя, л", '0.0')
         self.status = self.params.get("Состояние", '')
         #self.km = self.params.get("Пробег, км", '')
-        self.brand = self.params.get("Мартка", '')
+        self.brand = self.params.get("Марка", '')
         self.model = self.params.get("Модель", '')
         self.corpus_type = self.params.get("Тип кузова", '')
         self.kpp = self.params.get("Коробка передач", '')
         self.circle = self.params.get("Руль", '') #левый / правый
-        self.year = self.params.get("Год выпуска", '')
+        self.year = self.params.get("Год выпуска", '0')
         self.engine_horse_power = self.params.get("Мощность двигателя, л.с.", '')
         self.color = self.params.get("Цвет", '')
         self.owners = self.params.get("Владельцев по ПТС", -1)
         self.wd = self.params.get("Привод", '')
         self.auto_type = self.params.get("Тип автомобиля", '')
-        self.number_of_doors = self.params.get("Количество дверей", '')
+        self.number_of_doors = self.params.get("Количество дверей", '0')
 
 
 class House(Item):
