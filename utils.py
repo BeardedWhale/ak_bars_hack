@@ -1,34 +1,59 @@
+import re
+
+from Item import Car
 from constants import *
+from website_parsers.ads_api.ads_api import ADS_API
+
+ads_api = ADS_API()
 
 def params_match(car, estimated_car):
     """ марка, год, модель, двигатель, пробег, год, статус(битая?),
         тип кузова, КПП, руль, мощность двигателя(лс) """
-    assert(car.brand == estimated_car.brand)
-    assert(car.model == estimated_car.model)
-    
-    # Engine type match: gasoline, diesel ...
-    if car.engine_type != estimated_car.engine_type:
+    # assert(car.brand == estimated_car.brand)
+    # assert(car.model == estimated_car.model)
+    car_brand = car.brand
+    car_brand = car_brand.replace(' ', '')
+    car_model = car.model
+    car_model = car_model.replace(' ', '')
+    car_model = car_model[:-1]
+    print(f'|{car_brand}|{car_model}|')
+    car_engine_type = car.engine_type.replace(' ', '')
+    car_engine_volume = float(re.findall("\d+\.\d+", car.engine_volume)[0])
+    car_year = int(car.year)
+    if car_brand != estimated_car.brand:
         return False
+    if car_model != estimated_car.model:
+        return False
+    # Engine type match: gasoline, diesel ...
+    if estimated_car.engine_type:
+        if car_engine_type != estimated_car.engine_type:
+            print(f'{car.engine_type}, {estimated_car.engine_type}')
+            return False
     
     # Engine volume difference in range
-    if abs(car.engine_volume - estimated_car.engine_volume) > max_engine_vol_diff:
-        return False
+    if estimated_car.engine_volume:
+        if abs(car_engine_volume - estimated_car.engine_volume) > max_engine_vol_diff:
+            return False
     
     # Year of production doesn't differ much
-    if abs(car.year - estimated_car.year) > max_year_diff:
-        return False
+    if estimated_car.year:
+        if abs(car_year - estimated_car.year) > max_year_diff:
+            return False
 
     # Kilometers run difference
-    if abs(car.km - estimated_car.km) > max_km_diff:
-        return False
+    # if estimated_car.km:
+    #     if abs(car.km - estimated_car.km) > max_km_diff:
+    #         return False
 
     # Cars have same transmission
-    if car.kpp != estimated_car.kpp:
-        return False
+    if estimated_car.kpp:
+        if car.kpp != estimated_car.kpp:
+            return False
 
-    # Horse power doesn't differ much 
-    if abs(car.engine_horse_power - estimated_car.engine_horse_power) > max_engine_hp_diff:
-        return False
+    # Horse power doesn't differ much
+    if estimated_car.engine_horse_power:
+        if abs(car.engine_horse_power - estimated_car.engine_horse_power) > max_engine_hp_diff:
+            return False
     
     return True
 
@@ -41,6 +66,37 @@ def filter(cars, estimated_car):
             matched_cars.append(car)
     return matched_cars
 
+def estimate_car(estimated_car: Car, number_of_candidates=10):
+    """
+
+    :param estimated_car:
+    :return:
+    """
+    # global ads_api
+    retrieved_cars = []
+    start_id = 0
+    filtered = []
+    tried_once_more = False
+    while not len(retrieved_cars) >= number_of_candidates:
+        cars, last_id = ads_api.send_auto_request(estimated_car.brand, estimated_car.model, start_id=start_id)
+        if start_id and cars:
+            if tried_once_more:
+                cars.pop(0) # remove first element as we already retrieved it
+            elif len(cars)==1:
+                tried_once_more = True
+        if not cars:
+            break
+        filtered = filter(cars, estimated_car)
+        retrieved_cars.extend(filtered)
+        start_id = last_id
+        print(filtered)
+    return retrieved_cars
+
+
+
+car = Car({'params':{"Модель": "Focus", 'Марка': 'Ford', 'Тип двигателя': 'Бензин', 'Объём двигателя, л': 1.8, 'Год выпуска': 2003}})
+filtered_cars = estimate_car(car)
+print('kek')
 
 def car_similarity_score(car, other_car):
     score = 0

@@ -41,14 +41,14 @@ class Car(Item):
         self.model = self.params.get("Модель", '')
         self.corpus_type = self.params.get("Тип кузова", '')
         self.kpp = self.params.get("Коробка передач", '')
-        self.circle = self.params.get("Руль", '')  # левый / правый
-        self.year = self.params.get("Год выпуска", '')
+        self.circle = self.params.get("Руль", '') #левый / правый
+        self.year = self.params.get("Год выпуска", '0')
         self.engine_horse_power = self.params.get("Мощность двигателя, л.с.", '')
         self.color = self.params.get("Цвет", '')
         self.owners = self.params.get("Владельцев по ПТС", -1)
         self.wd = self.params.get("Привод", '')
         self.auto_type = self.params.get("Тип автомобиля", '')
-        self.number_of_doors = self.params.get("Количество дверей", '')
+        self.number_of_doors = self.params.get("Количество дверей", '0')
 
     def init_crwl(self, json):
         self.dt = json.get("dt", '')
