@@ -3,7 +3,8 @@ import re
 from abc import ABC
 from typing import Dict
 # from constants import ADS_API_KEY
-from constants import ADS_API_KEY
+from constants import ADS_API_KEY, CRWL_API_KEY
+
 
 class Item(ABC):
     def __init__(self, api_name, json: Dict):
@@ -16,12 +17,16 @@ class Item(ABC):
             self.url = json.get("url", '')  # Url объявления на сайте-источнике
             self.title = json.get("title", '')  # Заголовок
             self.price = json.get("price", '')  # Цена
-            self.time = json.get("time", '')  # Дата и время добавления объявления в нашу систему, либо время обновления. Время московское
-            self.nedvigimost_type_id = json.get("nedvigimost_type_id", '')  # ID типа недвижимости: 1 - Продам, 2 - Сдам, 3 - Куплю или 4 - Сниму
+            self.time = json.get("time",
+                                 '')  # Дата и время добавления объявления в нашу систему, либо время обновления. Время московское
+            self.nedvigimost_type_id = json.get("nedvigimost_type_id",
+                                                '')  # ID типа недвижимости: 1 - Продам, 2 - Сдам, 3 - Куплю или 4 - Сниму
             self.avitoid = json.get('avitoid', '')  # ID объявления на сайте-источнике
             self.source_id = json.get("source_id", '')  # ID cайта-источника в нашей системе
-            self.cat1_id = json.get("cat1_id", '')  # ID категории первого уровня, например, категория Недвижимость имеет значение 1
-            self.cat2_id = json.get("cat2_id", '')  # ID категории второго уровня, например, категория Квартиры имеет значение 2
+            self.cat1_id = json.get("cat1_id",
+                                    '')  # ID категории первого уровня, например, категория Недвижимость имеет значение 1
+            self.cat2_id = json.get("cat2_id",
+                                    '')  # ID категории второго уровня, например, категория Квартиры имеет значение 2
             self.cat1 = json.get('cat1', '')  # Название категории первого уровня, например, Недвижимость
             self.cat2 = json.get("cat2", '')  # Название категории второго уровня, например, Квартиры
 
@@ -31,9 +36,11 @@ class Car(Item):
         super().__init__(api_name, json)
         if api_name == ADS_API_KEY:
             self.init_ads()
+        if api_name == CRWL_API_KEY:
+            self.init_crwl(json)
 
     def init_ads(self):
-        self.engine_type = self.params.get("Тип двигателя", '')  #Бензин, Дизель, Гибрид или Электро
+        self.engine_type = self.params.get("Тип двигателя", '')  # Бензин, Дизель, Гибрид или Электро
         engine_volume = self.params.get("Объём двигателя, л", '')
         if engine_volume:
             try:
@@ -45,14 +52,14 @@ class Car(Item):
             engine_volume = 0.0
         self.engine_volume = engine_volume
         self.status = self.params.get("Состояние", '')
-        #self.km = self.params.get("Пробег, км", '')
+        # self.km = self.params.get("Пробег, км", '')
         self.brand = self.params.get("Марка", '')
         car_model = self.params.get("Модель", '')
         car_model = car_model.strip()
         self.model = car_model
         self.corpus_type = self.params.get("Тип кузова", '')
         self.kpp = self.params.get("Коробка передач", '')
-        self.circle = self.params.get("Руль", '') #левый / правый
+        self.circle = self.params.get("Руль", '')  # левый / правый
         year = self.params.get("Год выпуска", '0')
         year = int(year)
         self.year = year
@@ -67,18 +74,17 @@ class Car(Item):
         number_of_doors = int(re.findall("\d+", number_of_doors)[0])
         self.number_of_doors = number_of_doors
 
-
     def init_crwl(self, json):
         self.dt = json.get("dt", '')
-        self.url = json.get("url", '') # ссылка
-        self.engine_type = json.get("fuel", '')  # Бензин, Дизель, Гибрид или Электро
+        self.url = json.get("url", '')  # ссылка
+        self.engine_type = json.get("engine", '')  # Бензин, Дизель, Гибрид или Электро
         self.engine_volume = json.get("enginevol", '')
         self.status = json.get("condition", '')  # битый / не битый
         self.run = json.get("run", '')  # пробег
         self.run_ed = json.get("run_ed", '')  # единица измерения пробега
-        self.brand = json("marka", '')
-        self.model = json.get("модель", '')
-        self.corpus_type = self.params.get("body", '')
+        self.brand = json.get("marka", '')
+        self.model = json.get("model", '')
+        self.corpus_type = json.get("body", '')
         self.kpp = json.get("transmission", '')
         self.circle = json.get("wheel", '')  # левый / правый
         self.year = json.get("year", '')
@@ -97,21 +103,22 @@ class House(Item):
         self.metro = json.get('metro', '')  # Метро или район
 
 
-class Commercial_house(House): #catid = 7
+class Commercial_house(House):  # catid = 7
     def __init__(self, api_name, json):
         super().__init__(api_name, json)
-        self.type = self.params.get('Вид объекта', '') #Гостиница, Офисное помещение, Помещение свободного назначения, Производственное помещение, Складское помещение, Торговое помещение
+        self.type = self.params.get('Вид объекта',
+                                    '')  # Гостиница, Офисное помещение, Помещение свободного назначения, Производственное помещение, Складское помещение, Торговое помещение
         self.area = self.params.get('Площадь', '')
         self.floor = self.params.get('Этаж', '')
         self.floors_in_house = self.params.get('Этажность здания', '')
 
 
-class Flat(House): #catid = 2
+class Flat(House):  # catid = 2
     def __init__(self, api_name, json):
         super().__init__(api_name, json)
-        self.number_of_rooms = self.params.get('Количество комнат', '') #Студия / 1 / 2 / ... / >9
-        self.house_type = self.params.get('Вид объекта', '') #Вторичка / Новостройка
-        self.house_type = self.params.get('Тип дома', '') #Кирпичный / Панельный / Блочный / Монолитный / Деревянный
+        self.number_of_rooms = self.params.get('Количество комнат', '')  # Студия / 1 / 2 / ... / >9
+        self.house_type = self.params.get('Вид объекта', '')  # Вторичка / Новостройка
+        self.house_type = self.params.get('Тип дома', '')  # Кирпичный / Панельный / Блочный / Монолитный / Деревянный
         self.floor = self.params.get('Этаж', '')
         self.number_of_floors = self.params.get('Этажей в доме', '')
         self.flat_area = self.params.get('Площадь', '')
@@ -129,13 +136,12 @@ class Room(House):  # catid = 3
         self.room_area = self.params.get('Площадь комнаты', '')
 
 
-class Living_house(House): # catid = 4
+class Living_house(House):  # catid = 4
     def __init__(self, api_name, json):
         super().__init__(api_name, json)
-        self.house_type = self.params.get('Вид объекта', '') # Дом / Дача / Коттедж / Таунхаус
+        self.house_type = self.params.get('Вид объекта', '')  # Дом / Дача / Коттедж / Таунхаус
         self.number_of_floors = self.params.get('Этажей в доме', '')
         self.wall_material = self.params.get('Материал стен', '')
         self.house_area = self.params.get('Площадь дома', '')
         self.land_area = self.params.get('Площадь участка', '')
         self.distance_to_city = self.params.get('Расстояние до города', '')
-
