@@ -19,8 +19,7 @@ class Item(ABC):
             price = json.get("price", '-1')  # Цена
             price = int(re.findall("\d+", price)[0])
             self.price = price
-            self.time = json.get("time",
-                                 '')  # Дата и время добавления объявления в нашу систему, либо время обновления. Время московское
+            self.time = json.get("time",'')  # Дата и время добавления объявления в нашу систему, либо время обновления. Время московское
             self.nedvigimost_type_id = json.get("nedvigimost_type_id",
                                                 '')  # ID типа недвижимости: 1 - Продам, 2 - Сдам, 3 - Куплю или 4 - Сниму
             self.avitoid = json.get('avitoid', '')  # ID объявления на сайте-источнике
@@ -40,6 +39,8 @@ class Car(Item):
             self.init_ads()
         if api_name == CRWL_API_KEY:
             self.init_crwl(json)
+        elif not api_name:
+            self.init_ads()
 
     def init_ads(self):
         self.engine_type = self.params.get("Тип двигателя", '')  # Бензин, Дизель, Гибрид или Электро
@@ -83,7 +84,7 @@ class Car(Item):
         self.number_of_doors = number_of_doors
 
     def init_crwl(self, json):
-        self.dt = json.get("dt", '')
+        self.time = json.get("dt", '')
         self.url = json.get("url", '')  # ссылка
         self.engine_type = json.get("engine", '')  # Бензин, Дизель, Гибрид или Электро
         engine_volume = json.get("enginevol", '0.0')
@@ -121,9 +122,11 @@ class Car(Item):
         self.color = json.get("color", '')
         self.owners = json.get("pts_owner", -1)
         self.wd = json.get("drive", '')
-        price = json.get("price", '0')
+        price = json.get("price", '-1')
         price = int(re.findall("\d+", price)[0])
         self.price = price
+        self.auto_type = ''
+        self.number_of_doors = -1
 
 
 class House(Item):

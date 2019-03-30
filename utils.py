@@ -128,13 +128,14 @@ def get_cars_candidates(car: Car, number_of_candidates: int)->List[Car]:
 
 def get_price(car, list_of_cars):
     """
-
+    Predicts price for a car
     :param car: car to predict price for
     :param list_of_cars: similar advertisements/training data
     :return: float
     """
     gbr = GradientBoostingRegressor(loss='ls', max_depth=6)
-    gbr.fit(build_train_data(list_of_cars))
+    X, y = build_train_data(list_of_cars)
+    gbr.fit(X, y)
     X = np.array(get_features(car))
 
     return gbr.predict(X.reshape(1, len(X)))[0]
@@ -182,3 +183,24 @@ def cars_to_json(cars:List[Car], best_price, ):
         best_variants[f'info{i}'] =car_dict
     answer['bestvariants'] = best_variants
     return json.dumps(answer)
+
+def car_from_json(js: str):
+    """
+    TODO cast numeric params to int and
+    Parses car info from json
+    :param json:
+    :return:
+    """
+    car = Car('', {})
+    params = json.loads(js)
+    category = params['category']
+    if category != 'cars':
+        return None
+    car.brand = params.get('carbrand', '')
+    car.model = params.get('cartype', '')
+    car.year = params.get('year', 0)
+    car.km = params.get('mileage', 0)
+    car.engine_type = params.get('enginetype')
+    car.engine_volume = params.get('evolume')
+    car.kpp = params.get('korobkaa')
+    return  car
