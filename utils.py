@@ -179,6 +179,9 @@ def cars_to_json(cars:List[Car], best_price, ):
         car_dict['Пробег'] = car.km
         car_dict['КПП'] = car.kpp
         car_dict['Цена'] = car.price
+        url = car.url
+        if url:
+            car_dict['Ссылка'] = url
         best_variants[f'info{i}'] =car_dict
     answer['bestvariants'] = best_variants
     return json.dumps(answer)
