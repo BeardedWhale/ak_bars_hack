@@ -9,8 +9,6 @@ def create_app():
     from . import loan_estimator
     app.register_blueprint(loan_estimator.bp)
     CORS(app) 
-        # allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"],
-        # supports_credentials=True)
     # app.config.from_mapping(
     #     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev_key'
     # )

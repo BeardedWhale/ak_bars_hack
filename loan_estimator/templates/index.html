@@ -1,0 +1,561 @@
+<html>
+
+<head>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.serializejson.js"></script>
+    <script>
+        $(document).ready(function (){
+            $("#categorySelect").change(function() {
+                // foo is the id of the other select box 
+                if ($(this).val() == "cars") {
+                    $("#carInfo").show();
+                    $("#apart").hide();
+                }else{
+
+                    if ($(this).val() == "house"){
+                        $("#carInfo").hide();
+                        $("#apart").show();
+                    }
+                    
+                } 
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+
+        var ip = "http://flask-env.d6qkf49nnh.us-east-1.elasticbeanstalk.com";
+        // var ip = "http://10.6.44.25:5000";
+
+        $(document).ready(function () {
+      $("#submitform").click(function (e) {
+          var MyForm = JSON.stringify($("#priceCalculator").serializeJSON());
+          console.log(MyForm);
+
+          $.ajax({
+                type: "POST",
+                url: ip+"/api/estimate",
+                headers: {
+                 'Content-Type':'application/json'
+                },
+                dataType: 'json',
+                data: MyForm,
+                type: 'POST',
+                success: function(response) {
+                    // var json = jQuery.parseJSON(response);
+                    console.log(response);
+                    // $('#len').html(json.len)
+                    // console.log(json);
+                    CreateTableFromJSON(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+          // $.ajax(
+          //     {
+          //         url: "",
+          //         type: "POST",
+          //         data: MyForm,
+          //     });
+          e.preventDefault();
+        //   CreateTableFromJSON(); //STOP default action
+      });
+  });
+
+
+        function CreateTableFromJSON(example) {
+
+
+        //        var example = {
+        //         "bestprice": "2000000",
+        //     "bestvariants": {
+        //         "info1": {
+        //             "id": "1",
+        //             "Двигатель": "Дизель",
+        //             "Марка": "BMW"
+        //         },
+
+        //         "info2": {
+        //             "id": "2",
+        //             "Двигатель": "Дизель",
+        //             "Марка": "BMW",
+        //         }
+        //     }
+
+
+        // }
+
+            var divContainer = document.getElementById("showResults");
+            while (divContainer.firstChild) {
+                divContainer.removeChild(divContainer.firstChild);
+            }
+            if (jQuery.isEmptyObject(example)){
+                var alert = document.createElement("div");
+                alert.setAttribute("class", "alert alert-danger");
+                alert.setAttribute("role", "alert");
+
+                var alertheading = document.createElement("h4");
+                alertheading.setAttribute("class", "alert-heading");
+                alertheading.innerHTML = "По вашему запросу ничего не найдено.";
+                alert.appendChild(alertheading);
+
+                var alertBody = document.createElement("p");
+                alertBody.innerHTML = "Пожалуйста, обновите параметры и попробуйте снова."
+                alert.appendChild(alertBody);
+                divContainer.appendChild(alert);
+            }
+
+            else {
+
+
+        // }
+        // var myBooks = [
+        //     {
+        //         "Book ID": "1",
+        //         "Book Name": "Computer Architecture",
+        //         "Category": "Computers",
+        //         "Price": "125.60"
+        //     },
+        //     {
+        //         "Book ID": "2",
+        //         "Book Name": "Asp.Net 4 Blue Book",
+        //         "Category": "Programming",
+        //         "Price": "56.00"
+        //     },
+        //     {
+        //         "Book ID": "3",
+        //         "Book Name": "Popular Science",
+        //         "Category": "Science",
+        //         "Price": "210.40"
+        //     }
+        // ]
+
+        var bprice  = document.createElement("div");
+        bprice.setAttribute("class", "panel panel-info");
+
+
+        var header = document.createElement("div")
+        header.setAttribute("class", "panel-heading");
+
+        var title = document.createElement("div");
+        title.setAttribute("class","panel-title text-center" );
+        title.innerHTML = "Лучшее предложение цены"
+
+        header.innerHTML = "";
+        header.appendChild(title);
+
+        var bodyt = document.createElement("div");
+        bodyt.setAttribute("class", "panel-body text-center required");
+       
+        bodyt.innerHTML = example.bestprice + " рублей";
+
+        bprice.innerHTML = "";
+        bprice.appendChild(header);
+        bprice.appendChild(bodyt);
+
+
+        var divContainerpr = document.getElementById("priceOffer");
+        while (divContainerpr.firstChild) {
+    divContainerpr.removeChild(divContainerpr.firstChild);
+}
+        divContainerpr.appendChild(bprice);
+
+        // EXTRACT VALUE FOR HTML HEADER. 
+        // ('Book ID', 'Book Name', 'Category' and 'Price')
+        var col = ["Характеристика", "Информация"];
+        // for (var i = 0; i < myBooks.length; i++) {
+        //     for (var key in myBooks[i]) {
+        //         if (col.indexOf(key) === -1) {
+        //             col.push(key);
+        //         }
+        //     }
+        // }
+        
+        // CREATE DYNAMIC TABLE.
+        var foundvariants = example.bestvariants;
+        // console.log(foundvariants)
+        // console.log(Object.keys(foundvariants).length)
+        for (var i = 0; i<Object.keys(foundvariants).length; i++){
+            var title = document.createElement("h3");
+            title.setAttribute("class", "text-center")
+            title.innerHTML = "Вариант "+(i+1);
+            divContainer.appendChild(title);
+            var table = document.createElement("table");
+            table.setAttribute("class", "table table-bordered");
+       
+
+        // var table = document.createElement("table");
+        // table.setAttribute("class", "table")
+
+        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+
+        var tr = table.insertRow(-1);                   // TABLE ROW.
+        tr.setAttribute("class", "bg-info");
+
+        vals = foundvariants[Object.keys(foundvariants)[i]];
+        // console.log(vals)
+        for (var j = 0; j < col.length; j++) {
+            var th = document.createElement("th");
+            th.setAttribute("class", "bg-info")      // TABLE HEADER.
+            th.innerHTML = col[j];
+            tr.appendChild(th);
+        }
+
+        // ADD JSON DATA TO THE TABLE AS ROWS.
+        for (var j = 0; j < Object.keys(vals).length; j++) {
+            chartics = Object.keys(vals)[j]
+            if (chartics.localeCompare("id") == 0)
+                chartics = "Рейтинг"
+
+            descr = vals[Object.keys(vals)[j]]
+            tr = table.insertRow(-1);
+
+            for (var k = 0; k < col.length; k++) {
+                var tabCell = tr.insertCell(-1);
+
+                if (k == 0){
+                    tabCell.innerHTML = chartics;
+                }
+                else{
+                    if (chartics.localeCompare("Ссылка") == 0){
+                        var ref = document.createElement("a")
+                        ref.setAttribute("href", descr);
+                        ref.setAttribute("target", "_blank")
+                        ref.innerHTML = "Перейти";
+                        tabCell.appendChild(ref);
+                    }else{
+                    tabCell.innerHTML = descr;
+                }
+                }
+            }
+        }
+
+        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+       
+        divContainer.appendChild(table);
+    }
+    }
+   }
+    </script>
+
+
+</head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<style type="text/css">
+    select.form-control{
+  background-color: white;
+  -webkit-appearance:none;
+   background-image:
+    linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%),
+    linear-gradient(to right, #ccc, #ccc);
+  background-position:
+    calc(100% - 20px) calc(1em + 2px),
+    calc(100% - 15px) calc(1em + 2px),
+    calc(100% - 2.5em) 0.5em;
+  background-size:
+    5px 5px,
+    5px 5px,
+    1px 1.5em;
+  background-repeat: no-repeat;  /*Adds background-image*/
+      /*background-position: 190px 10px!important; */ /*Position of the background-image*/
+ }
+
+ #carInfo, #apart{
+    display: none;
+ }
+
+
+</style>
+
+
+<body>
+    
+    <div class="container">
+        <div id="signupbox" style=" margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+            <div class="panel panel-info">
+                
+                <div class="panel-heading ">
+                <div class="panel-title text-center">Калькулятор цены</div>
+            </div> 
+
+            <div class="panel-body">
+            <form id = "priceCalculator">
+
+
+
+
+                <!-- <input type='hidden' name='csrfmiddlewaretoken' value='XFe2rTYl9WOpV8U6X5CfbIuOZOELJ97S' /> -->
+
+                <!-- <div id="div_id_region" class="form-group required">
+                            <label for="regionSelect"  class="control-label col-md-4  requiredField">Выберите регион</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                                <select class="form-control" id="regionSelect" name ="region" required>
+                                    <option disabled selected value> -- выберите опцию -- </option>
+                               
+                                  <option value="3">3</option>
+                                  <option value="3">4</option>
+                                  <option value="3">5</option>
+                                </select>
+                                
+                            </div>
+
+
+                        </div> 
+
+
+
+                        <div id="div_id_citu" class="form-group required">
+                            <label for="citySelect"  class="control-label col-md-4  requiredField">Выберите город</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                                <select class="form-control" id="citySelect" name = "region" required>
+                                    <option disabled selected value> -- выберите опцию -- </option>
+                                  <option value="3">Cars</option>
+                                  <option value="3">Real Estate</option>
+
+                                </select>
+                               
+                            </div>
+                        </div>  -->
+
+
+                        <div id="div_id_category" class="form-group required">
+                            <label for="categorySelect"  class="control-label col-md-4  requiredField">Категория</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                                <select class="form-control" id="categorySelect" name="category">
+                                <option disabled selected value> -- выберите опцию -- </option>
+                                  <option value="cars">Машины</option>
+                                  <option value="house">Недвижимость</option>
+<!--                                  <option>3</option>
+                                  <option>4</option>
+                                  <option>5</option> -->
+                                </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+
+
+                        <div id="carInfo">
+                            
+
+                            <div id="div_id_car_brand" class="form-group required">
+                            <label for="carBrandSelect"  class="control-label col-md-4  requiredField">Марка</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                                <select class="form-control" id="carBrandSelect" name="carbrand" required>
+                                    <option disabled selected value> -- выберите опцию -- </option>
+                                  <option value="audi">Audi</option>
+                                  <option value="BMW">BMW</option>
+<!--                                  <option>3</option>
+                                  <option>4</option>
+                                  <option>5</option> -->
+                                </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+                        <div id="div_id_car_type" class="form-group required">
+                            <label for="carTypeSelect"  class="control-label col-md-4  requiredField">Модель</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                                <select class="form-control" id="carTypeSelect" name = "cartype" required>
+                                    <option disabled selected value> -- выберите опцию -- </option>
+                                  <option value="audi">Audi</option>
+                                  <option value="audi">BMW</option>
+<!--                                  <option>3</option>
+                                  <option>4</option>
+                                  <option>5</option> -->
+                                </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+
+
+
+
+                        <div id="div_id_year" class="form-group"> 
+                            <label for="id_year" class="control-label col-md-4 ">Год выпуска</label> 
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_year" name="year" placeholder="" style="margin-bottom: 10px" type="text"/>
+                            </div>
+                        </div>
+
+                        <div id="div_id_mileage" class="form-group required"> 
+                            <label for="id_mileage" class="control-label col-md-4  requiredField"> Пробег</label> 
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_mileage" name="mileage" placeholder="км" style="margin-bottom: 10px" type="text" />
+                            </div>
+                        </div>
+
+                        <div id="div_id_enginetype" class="form-group required">
+                            <label for="enginetypeSelect"  class="control-label col-md-4  requiredField">Тип двигателя</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                                <select class="form-control" id="enginetypeSelect" name="enginetype">
+                                    <option disabled selected value> -- выберите опцию -- </option>
+                                  <option value = "etgasoline">Бензин</option>
+                                  <option value = "etdisel">Дизель</option>
+                                  <option value = "etelectro">Электро</option>
+                                  <option value = "ethybrid">Гибрид</option>
+                                  <option value = "etgas">Газ</option>
+<!--                                  <option>3</option>
+                                  <option>4</option>
+                                  <option>5</option> -->
+                                </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+
+                        <div id="div_id_evolume" class="form-group required"> 
+                            <label for="id_evolume" class="control-label col-md-4  requiredField">Объем двигателя</label> 
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_evolume" name="evolume" placeholder="литры" style="margin-bottom: 10px" type="text" />
+                            </div>
+                        </div>
+
+
+                        <div id="div_id_korobka" class="form-group required">
+                            <label for="carKorobkaSelect"  class="control-label col-md-4  requiredField">Коробка</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                                <select class="form-control" id="carKorobkaSelect" name="korobka">
+                                    <option disabled selected value> -- выберите опцию -- </option>
+                                  <option value = "korbkamech">Механическая</option>
+                                  <option value = "korbkaauto">Автомат</option>
+                                  <option value = "korobkarobot">Робот</option>
+                                  <option value = "korobkavariator">Вариатор</option>
+<!--                                  <option>3</option>
+                                  <option>4</option>
+                                  <option>5</option> -->
+                                </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div>  
+
+
+                        </div>
+
+
+                        <div id = "apart">
+                            
+                            <div id="div_id_region" class="form-group required">
+                            <label for="regionSelect"  class="control-label col-md-4  requiredField">Выберите регион</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                                <select class="form-control" id="regionSelect" name ="region" required>
+                                    <option disabled selected value> -- выберите опцию -- </option>
+                               
+                                  <option value="3">3</option>
+                                  <option value="3">4</option>
+                                  <option value="3">5</option>
+                                </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+
+
+                        </div> 
+
+
+
+                        <div id="div_id_citu" class="form-group required">
+                            <label for="citySelect"  class="control-label col-md-4  requiredField">Выберите город</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                                <select class="form-control" id="citySelect" name = "region">
+                                    <option disabled selected value> -- выберите опцию -- </option>
+                                  <option value="3">Cars</option>
+                                  <option value="3">Real Estate</option>
+<!--                                  <option>3</option>
+                                  <option>4</option>
+                                  <option>5</option> -->
+                                </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+
+                        <div id="div_id_metro" class="form-group required">
+                            <label for="metroSelect"  class="control-label col-md-4  requiredField">Метро</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                                <select class="form-control" id="metroSelect" name = "metro">
+                                    <option disabled selected value> -- выберите опцию -- </option>
+                                  <option value="3">Cars</option>
+                                  <option value="3">Real Estate</option>
+<!--                                  <option>3</option>
+                                  <option>4</option>
+                                  <option>5</option> -->
+                                </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div>
+
+
+                        <div id="div_id_citu" class="form-group required">
+                            <label for="citySelect"  class="control-label col-md-4  requiredField">Тип недвижимости</label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                                <select class="form-control" id="citySelect" name = "region">
+                                    <option disabled selected value> -- выберите опцию -- </option>
+                                  <option value="comm">Коммерческая</option>
+                                  <option value="flat">Квартиры</option>
+                                  <option value = "room">Комнаты</option>
+                                  <option value = "house">Дома, дачи, коттеджи</option>
+<!--                                  <option>3</option>
+                                  <option>4</option>
+                                  <option>5</option> -->
+                                </select>
+                                <!-- <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="S"  style="margin-bottom: 10px">Knowledge Seeker</label>
+                                <label class="radio-inline"> <input type="radio" name="select" id="id_select_2" value="P"  style="margin-bottom: 10px">Knowledge Provider </label> -->
+                            </div>
+                        </div> 
+
+
+
+
+
+                        </div>
+
+
+
+                        <div class="form-group"> 
+                            <div class="aab controls col-md-4 "></div>
+                            <div class="controls col-md-8 ">
+                                <input type="submit" name="Search" value="Поиск" class="btn btn-primary btn btn-info" id="submitform"/>
+                                <!-- or <input type="button" name="Signup" value="Sign Up with Facebook" class="btn btn btn-primary" id="button-id-signup" /> -->
+                            </div>
+                        </div> 
+</form>
+
+
+          
+                
+            </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="container" >
+
+        <div class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2" id = "priceOffer"> </div>
+
+        <div class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2" id="showResults">
+            
+        </div>
+        
+
+
+    </div>
+</body> 
+
+</html>
