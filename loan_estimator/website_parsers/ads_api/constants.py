@@ -15,6 +15,11 @@ CATEGORIES = {'1': 'Недвижимость', '2': 'Квартиры', '3': 'К
               '59': 'Для бизнеса', '60': 'Готовый бизнес', '61': 'Оборудование для бизнеса'}
 
 
+REAL_ESTATE_CATEGORIES = {'Квартиры': 'Flat',
+                  'Комнаты': 'Room',
+                  'Дома, дачи, коттеджи': 'House',
+                  'Коммерческая недвижимость': 'Commercial_house'}
+
 class ADSResponseCode():
     """
     Class for ADS Response codes
