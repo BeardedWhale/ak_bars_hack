@@ -5,7 +5,7 @@ import requests
 
 from Item import Car
 from website_parsers.base_api import BaseApi
-from website_parsers.crwl_api.constants import CRWLResponseCode
+from website_parsers.crwl_api.constants import CRWLResponseCode, REGIONS, REAL_ESTATE_CATEGORIES
 
 SLEEP_TIME = 10  # 20 seconds between requests
 ACCESS_TOKEN = 'c0bf868677c449f44b7c98cab00b77e4'
@@ -43,4 +43,25 @@ class CRWL_API(BaseApi):
             return [Car(self.name, car) for car in response_data]
         return []
 
-    # def send_house_request(self):
+    def send_house_request(self, category, region, ):
+        """
+
+        :return:
+        """
+        type_ad = 'продам'
+        url = 'http://crwl.ru/api/rest/real-estate/latest/get_ads/?' \
+              'api_key=c0bf868677c449f44b7c98cab00b77e4'
+        region_id = REGIONS.get(region, '')
+        if region_id:
+            url += f'&region={region_id}'
+        category_id = REAL_ESTATE_CATEGORIES.get(category, '')
+        if category_id:
+            url += f'&type={category_id}'
+        url += f'&type_ad={type_ad}'
+        print(url)
+        response = requests.get(url)
+        if response.status_code == CRWLResponseCode.SUCCESS:
+            response_body = response.text
+            response_data = json.loads(response_body)
+            return response_data
+        return  None

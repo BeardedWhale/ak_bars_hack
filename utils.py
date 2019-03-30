@@ -160,7 +160,7 @@ def get_features(car):
             car.kpp.lower() == 'автомат', car.kpp.lower() == 'механика', car.kpp.lower() == 'вариатор',
             car.kpp.lower() == 'гибрид']
 
-def cars_to_json(cars:List[Car], best_price, ):
+def cars_to_json(cars:List[Car], best_price):
     """
     Method to pars cars array to json
     :param cars:List of cars more similar to query car
@@ -185,3 +185,19 @@ def cars_to_json(cars:List[Car], best_price, ):
         best_variants[f'info{i}'] =car_dict
     answer['bestvariants'] = best_variants
     return json.dumps(answer)
+
+def filter_houses(houses, estimated_house):
+    matched_cars = []
+    for house in houses:
+        if params_house_match(house, estimated_house):
+            matched_cars.append(house)
+    return matched_cars
+
+def params_house_match(house, estimated_house):
+    """
+    Checks if advert is suitable for us
+    :param house:
+    :param estimated_house:
+    :return:
+    """
+    return True

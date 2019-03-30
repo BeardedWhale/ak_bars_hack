@@ -17,7 +17,8 @@ class Item(ABC):
             self.url = json.get("url", '')  # Url объявления на сайте-источнике
             self.title = json.get("title", '')  # Заголовок
             price = json.get("price", '-1')  # Цена
-            price = int(re.findall("\d+", price)[0])
+            if isinstance(price, str):
+                price = int(re.findall("\d+", price)[0])
             self.price = price
             self.time = json.get("time",
                                  '')  # Дата и время добавления объявления в нашу систему, либо время обновления. Время московское
