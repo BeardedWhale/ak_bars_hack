@@ -1,4 +1,5 @@
 import datetime
+import json
 import re
 from typing import List
 import numpy as np
@@ -36,9 +37,9 @@ def params_match(car, estimated_car):
             return False
 
     # Kilometers run difference
-    # if estimated_car.km:
-    #     if abs(car.km - estimated_car.km) > max_km_diff:
-    #         return False
+    if estimated_car.km:
+        if abs(car.km - estimated_car.km) > max_km_diff:
+            return False
 
     # Cars have same transmission
     if estimated_car.kpp:
@@ -109,7 +110,13 @@ def car_similarity_score(car, other_car)-> int:
     return score
 
 
-def get_cars_candidates(car:Car, number_of_candidates: int)->List[Car]:
+def get_cars_candidates(car: Car, number_of_candidates: int)->List[Car]:
+    """
+    This method finds most similar cars to a query car
+    :param car: Car
+    :param number_of_candidates: amount of similar cars to find
+    :return: list of cars
+    """
 
     number_of_retreived_cars = number_of_candidates + number_of_candidates//2
     filtered_cars = estimate_car(car, number_of_retreived_cars)
@@ -152,3 +159,26 @@ def get_features(car):
             car.engine_type.lower() == 'гибрид', car.engine_type.lower() == 'электро',
             car.kpp.lower() == 'автомат', car.kpp.lower() == 'механика', car.kpp.lower() == 'вариатор',
             car.kpp.lower() == 'гибрид']
+
+def cars_to_json(cars:List[Car], best_price, ):
+    """
+    Method to pars cars array to json
+    :param cars:List of cars more similar to query car
+    :return: json string to send to server
+    """
+    answer = {}
+    answer['bestprice'] = best_price
+    best_variants = {}
+    for i, car in enumerate(cars):
+        car_dict = {}
+        car_dict['id'] = i
+        car_dict['Модель'] = car.model
+        car_dict['Бренд'] = car.brand
+        car_dict['Год'] = car.year
+        car_dict['Двигатель'] = car.engine_type
+        car_dict['Пробег'] = car.km
+        car_dict['КПП'] = car.kpp
+        car_dict['Цена'] = car.price
+        best_variants[f'info{i}'] =car_dict
+    answer['bestvariants'] = best_variants
+    return json.dumps(answer)
