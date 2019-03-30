@@ -3,7 +3,7 @@ import time
 from typing import List, Tuple
 import requests
 from Item import Car
-from website_parsers.ads_api.constants import ADSResponseCode, REAL_ESTATE_CATEGORIES
+from website_parsers.ads_api.constants import ADSResponseCode, REAL_ESTATE_CATEGORIES, CATEGORIES
 from website_parsers.base_api import BaseApi
 from datetime import datetime
 from datetime import timedelta
@@ -38,12 +38,14 @@ class ADS_API(BaseApi):
         :param start_id: start id to retrieve adverts starting from this id
         :return: List of Car objects
         """
+        # category_id = 22
         curr_time = datetime.now()
         time_diff = curr_time - self.last_request_time
         if time_diff < self.sleep_time:
             time.sleep(self.sleep_time.seconds - time_diff.seconds)
-        url = f'http://ads-api.ru/main/api?user={self.mail}&token={self.access_token}'
-        q = f'{mark} {model}'
+        url = f'http://ads-api.ru/main/api?user={self.mail}&token={self.access_token}&param_7614={mark}&category_id={22}'
+
+        q = f' {model}'
         if year:
             q += f' {year}г'
         if mileage:

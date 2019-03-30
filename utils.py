@@ -78,15 +78,16 @@ def estimate_car(estimated_car: Car, number_of_candidates=10):
     start_id = 0
     filtered = []
     tried_once_more = False
-    cars = []
-    while not len(retrieved_cars) >= number_of_candidates:
-        for api in apis:
-            _cars, id = api.send_auto_request(estimated_car.brand, estimated_car.model, start_id=start_id)
-            if id != -1:
-                last_id = id
-            cars.extend(_cars)
-        cars = merge_cars_lists(cars)
 
+    while not len(retrieved_cars) >= number_of_candidates:
+
+        cars1, last_id = ads_api.send_auto_request(estimated_car.brand, estimated_car.model, start_id=start_id)
+        cars2, _ = crwl_api.send_auto_request(estimated_car.brand, estimated_car.model, start_id=start_id)
+        print(cars1)
+        print(cars2)
+        cars = merge_cars_lists(cars1, cars2)
+        print(len(retrieved_cars))
+        print(len(cars))
         if start_id and cars:
             if tried_once_more:
                 cars.pop(0)  # remove first element as we already retrieved it
@@ -101,14 +102,15 @@ def estimate_car(estimated_car: Car, number_of_candidates=10):
     return retrieved_cars
 
 
-def merge_cars_lists(cars):
-    result = []
-    urls = [car.url for car in cars[0]]
-    for c in cars[1:]:
-        for car in c:
-            if car.url not in urls:
-                urls.append(car.url)
-                result.append(car)
+def merge_cars_lists(cars1, cars2):
+    result = cars1
+    urls = [car.url for car in cars1]
+    if not len(cars2) and len(cars1): return cars1
+    if not len(cars1) and len(cars2): return cars2
+    for car in cars2:
+        if car.url not in urls:
+            urls.append(car.url)
+            result.append(car)
     return result
 
 
@@ -227,3 +229,4 @@ def car_from_json(js: str):
     car.engine_volume = params.get('evolume')
     car.kpp = params.get('korobkaa')
     return car
+
