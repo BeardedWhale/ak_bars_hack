@@ -16,3 +16,8 @@ class BaseApi(ABC):
     @abc.abstractmethod
     def register_api(self):
         pass
+
+    @abc.abstractmethod
+    def send_auto_request(self, mark: str, model: str, engine: str = '', mileage: str = '',
+                          gearbox: str = '', year: str = '', start_id: int = 0):
+        pass

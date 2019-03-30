@@ -8,8 +8,12 @@ from sklearn.ensemble import GradientBoostingRegressor
 from Item import Car
 from constants import *
 from website_parsers.ads_api.ads_api import ADS_API
+from website_parsers.crwl_api.crwl_api import CRWL_API
 
 ads_api = ADS_API()
+crwl_api = CRWL_API()
+apis = [ads_api, crwl_api]
+
 
 def params_match(car, estimated_car):
     """ марка, год, модель, двигатель, пробег, год, статус(битая?),
@@ -17,39 +21,39 @@ def params_match(car, estimated_car):
     # assert(car.brand == estimated_car.brand)
     # assert(car.model == estimated_car.model)=
     car_engine_type = car.engine_type.replace(' ', '')
-    if car.brand != estimated_car.brand:
+    if car.brand.lower() != estimated_car.brand.lower():
         return False
-    if car.model != estimated_car.model:
+    if car.model.lower() != estimated_car.model.lower():
         return False
-    # Engine type match: gasoline, diesel ...
-    if estimated_car.engine_type:
-        if car_engine_type != estimated_car.engine_type:
-            return False
-
-    # Engine volume difference in range
-    if estimated_car.engine_volume:
-        if abs(car.engine_volume - estimated_car.engine_volume) > max_engine_vol_diff:
-            return False
-
-    # Year of production doesn't differ much
-    if estimated_car.year:
-        if abs(car.year - estimated_car.year) > max_year_diff:
-            return False
-
-    # Kilometers run difference
-    if estimated_car.km:
-        if abs(car.km - estimated_car.km) > max_km_diff:
-            return False
-
-    # Cars have same transmission
-    if estimated_car.kpp:
-        if car.kpp != estimated_car.kpp:
-            return False
-
-    # Horse power doesn't differ much
-    if estimated_car.engine_horse_power:
-        if abs(car.engine_horse_power - estimated_car.engine_horse_power) > max_engine_hp_diff:
-            return False
+    # # Engine type match: gasoline, diesel ...
+    # if estimated_car.engine_type:
+    #     if car_engine_type != estimated_car.engine_type:
+    #         return False
+    #
+    # # Engine volume difference in range
+    # if estimated_car.engine_volume:
+    #     if abs(car.engine_volume - estimated_car.engine_volume) > max_engine_vol_diff:
+    #         return False
+    #
+    # # Year of production doesn't differ much
+    # if estimated_car.year:
+    #     if abs(car.year - estimated_car.year) > max_year_diff:
+    #         return False
+    #
+    # # Kilometers run difference
+    # if estimated_car.km:
+    #     if abs(car.km - estimated_car.km) > max_km_diff:
+    #         return False
+    #
+    # # Cars have same transmission
+    # if estimated_car.kpp:
+    #     if car.kpp != estimated_car.kpp:
+    #         return False
+    #
+    # # Horse power doesn't differ much
+    # if estimated_car.engine_horse_power:
+    #     if abs(car.engine_horse_power - estimated_car.engine_horse_power) > max_engine_hp_diff:
+    #         return False
 
     return True
 
@@ -62,6 +66,7 @@ def filter(cars, estimated_car):
             matched_cars.append(car)
     return matched_cars
 
+
 def estimate_car(estimated_car: Car, number_of_candidates=10):
     """
 
@@ -73,24 +78,41 @@ def estimate_car(estimated_car: Car, number_of_candidates=10):
     start_id = 0
     filtered = []
     tried_once_more = False
+    cars = []
     while not len(retrieved_cars) >= number_of_candidates:
-        cars, last_id = ads_api.send_auto_request(estimated_car.brand, estimated_car.model, start_id=start_id)
+        for api in apis:
+            _cars, id = api.send_auto_request(estimated_car.brand, estimated_car.model, start_id=start_id)
+            if id != -1:
+                last_id = id
+            cars.extend(_cars)
+        cars = merge_cars_lists(cars)
+
         if start_id and cars:
             if tried_once_more:
-                cars.pop(0) # remove first element as we already retrieved it
-            elif len(cars)==1:
+                cars.pop(0)  # remove first element as we already retrieved it
+            elif len(cars) == 1:
                 tried_once_more = True
         if not cars:
             break
         filtered = filter(cars, estimated_car)
+
         retrieved_cars.extend(filtered)
         start_id = last_id
     return retrieved_cars
 
 
+def merge_cars_lists(cars):
+    result = []
+    urls = [car.url for car in cars[0]]
+    for c in cars[1:]:
+        for car in c:
+            if car.url not in urls:
+                urls.append(car.url)
+                result.append(car)
+    return result
 
 
-def car_similarity_score(car, other_car)-> int:
+def car_similarity_score(car, other_car) -> int:
     score = 0
     if car.brand == other_car.brand:
         score += 0.2
@@ -110,7 +132,7 @@ def car_similarity_score(car, other_car)-> int:
     return score
 
 
-def get_cars_candidates(car: Car, number_of_candidates: int)->List[Car]:
+def get_cars_candidates(car: Car, number_of_candidates: int) -> List[Car]:
     """
     This method finds most similar cars to a query car
     :param car: Car
@@ -118,12 +140,11 @@ def get_cars_candidates(car: Car, number_of_candidates: int)->List[Car]:
     :return: list of cars
     """
 
-    number_of_retreived_cars = number_of_candidates + number_of_candidates//2
+    number_of_retreived_cars = number_of_candidates + number_of_candidates // 2
     filtered_cars = estimate_car(car, number_of_retreived_cars)
     ranked = list(sorted(filtered_cars, key=lambda x: car_similarity_score(car, x), reverse=True))
     top_k = ranked[:number_of_candidates]
     return top_k
-
 
 
 def get_price(car, list_of_cars):
@@ -161,7 +182,8 @@ def get_features(car):
             car.kpp.lower() == 'автомат', car.kpp.lower() == 'механика', car.kpp.lower() == 'вариатор',
             car.kpp.lower() == 'гибрид']
 
-def cars_to_json(cars:List[Car], best_price, ):
+
+def cars_to_json(cars: List[Car], best_price, ):
     """
     Method to pars cars array to json
     :param cars:List of cars more similar to query car
@@ -180,9 +202,10 @@ def cars_to_json(cars:List[Car], best_price, ):
         car_dict['Пробег'] = car.km
         car_dict['КПП'] = car.kpp
         car_dict['Цена'] = car.price
-        best_variants[f'info{i}'] =car_dict
+        best_variants[f'info{i}'] = car_dict
     answer['bestvariants'] = best_variants
     return json.dumps(answer)
+
 
 def car_from_json(js: str):
     """
@@ -203,4 +226,4 @@ def car_from_json(js: str):
     car.engine_type = params.get('enginetype')
     car.engine_volume = params.get('evolume')
     car.kpp = params.get('korobkaa')
-    return  car
+    return car

@@ -21,15 +21,18 @@ class CRWL_API(BaseApi):
     def register_api(self):
         pass
 
-    def send_auto_request(self, mark: str = '', model: str = ''):
+    def send_auto_request(self, mark: str, model: str, engine: str = '', mileage: str = '',
+                          gearbox: str = '', year: str = '', start_id: int = 0):
         """
 
         :param mark:
         :param model:
         :return: list of Car objects
         """
+
         curr_time = datetime.datetime.now()
         time_diff = curr_time - self.last_request_time
+
         if time_diff < self.sleep_time:
             time.sleep(self.sleep_time.seconds - time_diff.seconds)
         if mark and model:
@@ -40,7 +43,7 @@ class CRWL_API(BaseApi):
         if response.status_code == CRWLResponseCode.SUCCESS:
             response_body = response.text
             response_data = json.loads(response_body)
-            return [Car(self.name, car) for car in response_data]
-        return []
+            return [Car(self.name, car) for car in response_data], start_id
+        return [], -1
 
     # def send_house_request(self):

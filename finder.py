@@ -18,9 +18,9 @@ class Finder():
         :param car: json str that we receive from server in server request
         :return:
         """
-        car = car_from_json(js=car_str)
-        cars_candidates = get_cars_candidates(car, number_of_candidates=20)
-        price = get_price(car, cars_candidates)
+        car = car_from_json(js=car_str) # ВОТ НЕ ЗНАЮ РАБОТАЕТ ИЛИ НЕТ
+        cars_candidates = get_cars_candidates(car, number_of_candidates=20) #ВОТ ЭТО РАБОТАЕТ
+        price = get_price(car, cars_candidates) #И ВОТ ЭТО РАБОТАЕТ
         # TODO make it not return function but send a response to server with found values
         return cars_candidates, price
 
